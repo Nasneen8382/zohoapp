@@ -7491,8 +7491,9 @@ def proj(request):
     tasks=task.objects.all()
     uz=usernamez.objects.all()
     uc=usercreate.objects.all()
+    emp=Payroll.objects.all()
     company=company_details.objects.get(user=request.user)
-    return render(request,'proj.html',{'data':data,'u':u,'tasks':tasks,'uz':uz,'uc':uc,'company':company})
+    return render(request,'proj.html',{'data':data,'u':u,'tasks':tasks,'uz':uz,'uc':uc,'company':company,'emp':emp})
     
 def vproj(request):
    
@@ -14999,3 +15000,90 @@ def remove(request):
     return JsonResponse(data)
 
 
+def create_emp(request):
+    if request.method=='POST':
+        title=request.POST['title']
+        fname=request.POST['fname']
+        lname=request.POST['lname']
+        alias=request.POST['alias']
+        joindate=request.POST['joindate']
+        saltype=request.POST['saltype']
+        if (saltype == 'Fixed'):
+            salary=request.POST['fsalary']
+        else:
+            salary=request.POST['vsalary']
+        image=request.FILES.get('file')
+        if image == None:
+            image="image/img.png"
+        empnum=request.POST['empnum']
+        designation = request.POST['designation']
+        location=request.POST['location']
+        gender=request.POST['gender']
+        dob=request.POST['dob']
+        blood=request.POST['blood']
+        fmname=request.POST['fm_name']
+        sname=request.POST['s_name']        
+        add1=request.POST['address']
+        add2=request.POST['address2']
+        address=add1+" "+add2
+        padd1=request.POST['paddress'] 
+        padd2=request.POST['paddress2'] 
+        paddress= padd1+padd2
+        phone=request.POST['phone']
+        ephn=request.POST['ephone']
+        if ephn=="":
+            ephone=None
+        else:
+            ephone=request.POST['ephone']
+        email=request.POST['email']
+        isdts=request.POST['tds']
+        if isdts == '1':
+            istdsval=request.POST['pora']
+            if istdsval == 'Percentage':
+                tds=request.POST['pcnt']
+            elif istdsval == 'Amount':
+                tds=request.POST['amnt']
+        else:
+            istdsval='No'
+            tds = 0
+        itn=request.POST['itn']
+        an=request.POST['an']        
+        uan=request.POST['uan'] 
+        pfn=request.POST['pfn']
+        pran=request.POST['pran']
+        payroll= Payroll(title=title,first_name=fname,last_name=lname,alias=alias,image=image,joindate=joindate,salary_type=saltype,salary=salary,emp_number=empnum,designation=designation,location=location,
+                         gender=gender,dob=dob,blood=blood,parent=fmname,spouse_name=sname,address=address,permanent_address=paddress ,Phone=phone,emergency_phone=ephone,
+                         email=email,ITN=itn,Aadhar=an,UAN=uan,PFN=pfn,PRAN=pran,isTDS=istdsval,TDS=tds)
+        payroll.save()
+
+        bank=request.POST['bank']
+        if(bank == '1'):
+            accno=request.POST['acc_no']       
+            ifsc=request.POST['ifsc']       
+            bname=request.POST['b_name']       
+            branch=request.POST['branch']
+            ttype=request.POST['ttype']
+            b=Bankdetails(payroll=payroll,acc_no=accno,IFSC=ifsc,bank_name=bname,branch=branch,transaction_type=ttype)
+            b.save()
+        attach=request.FILES.get('attach')       
+        if(attach):
+            att=Payrollfiles(attachment=attach,payroll=payroll)
+        # messages.success(request,'Saved succefully !')
+        print(bank)
+        options = {}
+        option_objects = Payroll.objects.all()
+        for option in option_objects:
+            options[option.id] = [option.id , option.first_name , option.last_name]
+        return JsonResponse(options) 
+    else:
+        return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+def getemployee(request):
+    employeeid = request.GET.get('id')
+    # print(customer_id)
+    payroll = Payroll.objects.get(id=employeeid)
+    data7 = {'email': payroll.email}
+    
+    print(data7)
+    return JsonResponse(data7)

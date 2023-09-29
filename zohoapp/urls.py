@@ -722,10 +722,13 @@ urlpatterns = [
     # ....................................................................................................
 
     path('holidays',views.holidays,name='holidays'),
+
     path('all_events/', views.all_events, name='all_events'), 
     path('add_event/', views.add_event, name='add_event'), 
     path('update/', views.update, name='update'),
-    path('remove/', views.remove, name='remove'),
+
+    path('create_emp', views.create_emp, name='create_emp'),
+    path('getemployee', views.getemployee, name='getemployee'),
 
     
     re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
