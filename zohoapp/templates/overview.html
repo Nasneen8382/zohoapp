@@ -4,607 +4,295 @@
 
 
 <style>
-    #over:hover{
+    #over:hover {
         background-color: rgba(110, 110, 110, 0.616);
-        font-weight:bold ;
+        font-weight: bold;
     }
+
     .image-upload>input {
-  display: none;
-}
-/* Style for the modal */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 9999; /* Set a high z-index to bring the modal to the front */
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-}
+        display: none;
+    }
 
-.modal-content {
-    background-color: #fefefe; /* Opaque background for the content */
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 60%;
-}
+    /* Style for the modal */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        /* Set a high z-index to bring the modal to the front */
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        /* Semi-transparent background */
+    }
 
-.close {
-    color: #aaaaaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
+    .modal-content {
+        background-color: #fefefe;
+        /* Opaque background for the content */
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 60%;
+    }
 
-.close:hover {
-    color: #000;
-}
+    .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
 
-/* Style for the text area */
-textarea {
-    width: 100%;
-    resize: vertical;
-    margin-bottom: 10px;
-}
+    .close:hover {
+        color: #000;
+    }
+
+    /* Style for the text area */
+    textarea {
+        width: 100%;
+        resize: vertical;
+        margin-bottom: 10px;
+    }
 
 
 
+    .searchbar,
+    .overview .bar {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+        /* margin: 0 1rem; */
+    }
+
+    .searchbar .right .btn {
+        background-color: rgb(243, 188, 9);
+    }
+
+    .searchbar .btn:hover {
+        background-color: rgba(219, 170, 7, 0.493);
+    }
+
+    .modal .table th {
+        color: #ffffff;
+    }
+
+    .modal-content {
+        padding: 1.5rem;
+        width: 50vw;
+        height: auto !important;
+        margin: auto;
+    }
 </style>
 
-<div class="fixed-top" style="top: 7rem; margin-left: 18rem;">
-    <div>
-        <div class="row"><div class="col-md-6"><a class="text-white" style="font-size: 2rem;">All Projects</a>
-                        
-                        
-        </div></div>
-        <div class="row">
-            <div class="col-sm-12 col-md-4 col-lg-4">
-                <div class="row">
-                    
-                    
-                    
-                    <div class="col-md-6 "> 
-                        <input type="text" id="vendorSearchInput" class="form-control bg-light text-dark" placeholder="Search Projects..." >
-                      </div>
-                      <div class="col-md-6 form-inline" style="margin-top: 0rem;"><a style="font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;" class="btn btn-warning mr-2" href="{% url 'proj' %}"><i class="fa-solid fa-plus "></i>New</a>&nbsp;
-                        <button id="sortButton" class="btn btn-warning">Sort</button>
-                      </div>
-                </div>
-                <div style="height: 435px;overflow-y: scroll;overflow-x: hidden; ">
-                    <div class="row">
-                        <div class="col-sm-12 col-md-12 col-lg-12">
 
-                            <table class="table  text-white" id="myTable">
-                                
-                                <tbody>
-                                  {% for v in proje %}                    
-                                  <tr id="over">                     
-                                    <td><i class="fa-sharp fa-light fa-circle"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp<a id="aover" href="{% url 'overview' v.id %}" style="color: rgb(230, 171, 45);">{{v.name}}</a></td>
-                                    <td><i class="fa-sharp fa-light fa-circle"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp<a id="aover" href="#" style="color: rgb(230, 171, 45);">{% if v.billing == "Fixed cost for project" or v.billing == "Based on project hours" %}
-                                        {{v.rateperhour}} 
-                                      {% else %}
-                                        Per hour
-                                      {% endif %}</a></td>                          
-                                  </tr>
-                                  {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div> 
+<div class="row  p-3">
+    <div class="col-sm-12 col-md-4 col-lg-4">
+        <div class="header pb-4">
+            <h5>ALL PROJECTS</h5>
+        </div>
+        <div class="searchbar pb-1">
+
+            <input class="form-control mx-1" type="text" placeholder="Search Project" name="search" id="search"
+                onkeyup="searchFunction()">
+
+            <a class="btn btn-outline-primary mr-1" href="{% url 'payroll_create' %}"><i class="fa fa-sort"></i></a>
+
+            <a class="btn btn-outline-primary mx-1" href="" data-bs-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false" role="button">
+                <i class="fa fa-filter"></i>
+            </a>
+            <div class="dropdown-menu ">
+                <a class="dropdown-item" href="javascript:sortTable(0)">Name A-Z</a>
+                <a class="dropdown-item" href="javascript:rsortTable(0)">Name Z-A</a>
+            </div>
+            <a class="btn btn-outline-primary" href="{% url 'payroll_create' %}"><i class="fa fa-plus"></i></a>
+        </div>
+        <hr>
+        <div style="height:60vh;overflow-y: scroll;overflow-x: hidden; ">
+            <table class="table  text-white" id="myTable">
+
+                <tbody>
+                    {% for v in proje %}
+                    <tr id="over" class='clickable-row' data-href="{% url 'overview' v.id %}">
+                        <td><a id="aover" style="color: rgb(230, 171, 45);">{{v.name}}</a></td>
+                        <td><a id="aover" style="color: rgb(230, 171, 45);">
+                            {% if v.billing == "Fixed cost for project" or v.billing == "Based on project hours" %}
+                                {{v.rateperhour}}
+                                {% else %}
+                                Per hour
+                                {% endif %}
+                            </a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-8 col-lg-8" style="background-color: #11111196;">
+        
+        <div class="row mx-1">
+            <div class="header pb-1 pt-3">
+                <h3 style="text-transform: uppercase;">{{ project.name }}</h3>
+            </div>
+            <div class="searchbar pb-4">
+                <div class="left">
+                    <button style="background-color: rgb(243, 188, 9);color: white;"
+                        class="btn">Overview</button>
+                    <button class="btn btn-light text-warning">Template</button>
+                    <!-- <a class="btn mx-1" href="#home">Overview</a> -->
+                </div>
+                <div class="right align-items-end">
+                    <a class="btn " href="{% url 'editproj' project.id %}" data-toggle="tooltip" title="Edit"><i
+                            class="fas fa-edit"></i></a>
+                    <a class="btn" href="{% url 'delproj' project.id %}" data-toggle="tooltip" title="Delete"><i
+                            class="fas fa-trash"></i></a>
+                            <a class="btn" href="" data-toggle="modal" data-target="#commentModal"
+                            data-toggle="tooltip" title="comment"><i class="far fa-comment"></i></a>
+                    <label for="file-input" class="btn ml-1 border-0" data-toggle="tooltip" title="Upload Attachments">
+                        <i class="fas fa-paperclip"></i>
+                    </label>
+                    <input id="file-input" type="file" name="file" style="display:none;" onchange="uploadFile()">
                 </div>
             </div>
-            <div class="col-sm-12 col-md-8 col-lg-8" style="margin-top: -3.5rem;">
-                {% for v in proj %}
-                <div class="row align-items-center">
-                    <div class="col-8 mb-2">
-                        <div class="d-flex align-items-center">
-                            <div style="width: 500px;" >
-                                <a class="text-white" style="font-size: 3rem; white-space: nowrap;"><i class="fa-sharp fa-regular fa-circle-dot"></i>{{ v.name }}</a>
-                        </div>&nbsp;
-                            <div class="toggle1" style="color: rgb(230, 171, 45);font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;font-size: 22px;margin-left: 150px;">
-                                <button onclick="fieldset1_function()" class="btn btn-light text-warning">Overview</button>
-                            </div>&nbsp;
-                            <div  class="toggle2" style="color: rgb(230, 171, 45);font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;font-size: 22px;">
-                                <a style="font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;" class="btn btn-warning mr-2" href="{% url 'editproj' v.id %}">Edit</a>
-                            </div>&nbsp;
-                            <div  class="toggle4" style="color: rgb(230, 171, 45);;font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;font-size: 22px;">
-                                <a style="font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;" class="btn btn-warning mr-2" href="{% url 'delproj' v.id %}">Delete</a>
-                            </div>&nbsp;
-                            
-                            <!--<div id="over" style="color: rgb(230, 171, 45);;font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;font-size: 22px;">
-                                <a href="{% url 'projcomment' v.id  %}" class="btn btn-warning">Comment</a>
-                            </div>&nbsp;&nbsp;-->
-                            <div style="color: rgb(230, 171, 45); font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; font-size: 22px;">
-                                <a href="#" class="btn btn-warning" onclick="openModal()">Comment</a>
-                            </div>&nbsp;
-                            <div  class="toggle4" style="color: rgb(230, 171, 45);;font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;font-size: 22px;">
-                                <label for="file-input">
-                                    <img src="https://cdn-icons-png.flaticon.com/128/9329/9329892.png" style="height: 40px;width: 40px;" />
-                                </label>
-                                <input id="file-input" type="file" style="display: none;" />
-                            </div>
-                        
-                        </div>
-                    </div>
+            <hr>
+        </div>
+        <div>
+            <div class="searchbar pt-2 pb-4">
+                <div></div>
+                <div class="align-items-end right" style="font-size: 1rem;">Start Date: {{project.start}} <br>End Date: {{p.end}}</div>
+            </div>
+        </div>
+        
+       
+        <!-- modal -->
+        <div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content" style="background-color: #3b3b3b;">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="exampleModalLabel">Add Comments</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-                {% endfor %}
-                  <fieldset1 id="overview" class="Overview" >
-                    <div style="height: 435px; overflow-y: scroll; overflow-x: hidden; margin-top: 2rem;">
-                        {% for v in proj %}
-                        <div class="form-group row ">
-                            <div class="col-sm-12 col-md-2 col-lg-2"></div>
-                            <div class="col-sm-12 col-md-3 col-lg-3 col-form-label"><label style="color:rgb(214, 75, 75) ;font-weight: bold;">Project Name:</label></div>
-                             <div class="col-sm-12 col-md-6 col-lg-6 col-form-label">
-                                <label style="font-weight: bold;">{{ v.name }}</label>      
-                             </div>   
-                        </div>
-                        <div class="form-group row mt-4">
-                            <div class="col-sm-12 col-md-2 col-lg-2"></div>
-                            <div class="col-sm-12 col-md-3 col-lg-3 col-form-label"><label style="color:rgb(214, 75, 75) ;font-weight: bold;">Project Description:</label></div>
-                             <div class="col-sm-12 col-md-6 col-lg-6 col-form-label">
-                                <label style="font-weight: bold;">{{ v.desc }}</label>      
-                             </div>   
-                        </div>
-                        <div class="form-group row mt-4">
-                            <div class="col-sm-12 col-md-2 col-lg-2"></div>
-                            <div class="col-sm-12 col-md-3 col-lg-3 col-form-label"><label style="color:rgb(214, 75, 75) ;font-weight: bold;">Status:</label></div>
-                             <div class="col-sm-12 col-md-6 col-lg-6 col-form-label">
-                                
-                                    {% if project.active %}
-                                    <a style="font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;font-weight: bold;" class="text-light"  href="#">Active</a>
-                                    {% else %}
-                                    <a style="font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;font-weight: bold;" class="text-light" href="#">Inactive</a>
-                                    {% endif %}
-                           
-                             </div>   
-                        </div>
-                        <div class="form-group row mt-4">
-                            <div class="col-sm-12 col-md-2 col-lg-2"></div>
-                            <div class="col-sm-12 col-md-3 col-lg-3 col-form-label"><label style="color:rgb(214, 75, 75) ;font-weight: bold;">Customer Name:</label></div>
-                             <div class="col-sm-12 col-md-6 col-lg-6 col-form-label">
-                                <label style="font-weight: bold;">{{ v.c_name.customerName }}</label>      
-                             </div>   
-                        </div>
-                        <div class="form-group row mt-4">
-                            <div class="col-sm-12 col-md-2 col-lg-2"></div>
-                            <div class="col-sm-12 col-md-3 col-lg-3 col-form-label"><label style="color:rgb(214, 75, 75) ;font-weight: bold;">Customer Email:</label></div>
-                             <div class="col-sm-12 col-md-6 col-lg-6 col-form-label">
-                                <label style="font-weight: bold;">{{ v.c_name.customerEmail }}</label>      
-                             </div>   
-                        </div>
-                        <div class="form-group row mt-4">
-                            <div class="col-sm-12 col-md-2 col-lg-2"></div>
-                            <div class="col-sm-12 col-md-3 col-lg-3 col-form-label"><label style="color:rgb(214, 75, 75) ;font-weight: bold;">Rate per hour(in Rs.):</label></div>
-                             <div class="col-sm-12 col-md-6 col-lg-6 col-form-label">
-                                <label style="font-weight: bold;">{% if v.billing == "Fixed cost for project" or v.billing == "Based on project hours" %}
-                                    {{v.rateperhour}} {{v.taskrph}}
-                                  {% else %}
-                                    Per hour
-                                  {% endif %}</label>      
-                             </div>   
-                        </div>
-                                <div class="form-group row mt-4">
-                            <div class="col-sm-12 col-md-2 col-lg-2"></div>
-                            <div class="col-sm-12 col-md-3 col-lg-3 col-form-label"><label style="color:rgb(214, 75, 75) ;font-weight: bold;">Billing:</label></div>
-                             <div class="col-sm-12 col-md-6 col-lg-6 col-form-label">
-                                <label style="font-weight: bold;">{{ v.billing}}</label>      
-                             </div>   
-                        </div>
-                      <div class="form-group row mt-4">
-                            <div class="col-sm-12 col-md-2 col-lg-2"></div>
-                            <div class="col-sm-12 col-md-3 col-lg-3 col-form-label"><label style="color:rgb(214, 75, 75) ;font-weight: bold;">Budget Type:</label></div>
-                             <div class="col-sm-12 col-md-6 col-lg-6 col-form-label">
-                                <label style="font-weight: bold;">{{ v.budget }}</label>      
-                             </div>   
-                        </div>
-                     
-                            {% endfor %}
 
+                <form action="" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <textarea type="text" class="form-control text-dark" name="comments"></textarea>
+                        <div class="container-fluid">
 
-
-                            <center><h1>User Details</h1></center>
-                            
-                            <label for="">Users</label><br>
-                            <table class="table text-black" id="user_table">
+                            <table class="table  mt-4">
                                 <thead>
                                     <tr>
-                                        <th>User</th>
-                                        <th class="text-right">E-mail</th>
-                                        <th class="text-right">Role</th>
+                                        <th>sl no.</th>
+                                        <th>Comments</th>
+                                        <th>Delete</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for v in usern %}
-                                    <tr id="user_row1">
-                                        <td>
-                                            <a class="text-white"  >{{v.usernamez}}</a>
-                                        </td>
-                                        <td class="text-right">
-                                            <a class="text-white"  >{{v.emailz}}</a>
-                                        </td>
-                                        <td class="text-right">
-                                            <a class="text-white"  >staff</a>
-                                        </td>
+                                    {% for c in com %}
+                                    <tr class="table-row">
+                                        <td>{{forloop.counter }}</td>
+                                        <td>{{c.comment}}</td>
+                                        <td><a class="text-danger"
+                                                href="{% url 'delete_payrollcomment' c.id  %}">Delete</a></td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
-                            
-                            <center><h1>Task Details</h1></center>
-                            
-                            <label for="">Tasks</label><br>
-                            <table class="table text-black" id="task_table">
-                                <thead>
-                                    <tr>
-                                        <th>Task name</th>
-                                        <th class="text-right">Description</th>
-                                        <th class="text-right">Type</th>
-                                        
-                        
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for v in taskz %}
-                                    <tr id="task_row1">
-                                        <td>
-                                            <a class="text-white"  >{{v.taskname}}</a>
-                                        </td>
-                                        <td class="text-right">
-                                            <a class="text-white"  >{{v.taskdes}}</a>
-                                        </td>
-                                        <td class="text-right">
-                                            <a class="text-white"  >{{v.billable}}</a>
-                                        </td>
-                                        
-                                        
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                           
-                          
-                           
-
+                        </div>
                     </div>
-                    <br><br><br> <br><br>          
-                  </fieldset1> 
 
-               
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+        <!-- modal end -->
+    </div>
 </div>
+
 <!-- Modal -->
-<div id="commentModal" class="modal">
-    <!-- Modal content -->
+<!-- <div id="commentModal" class="modal">
     <div class="modal-content bg-dark">
         <span class="close" onclick="closeModal()">&times;</span>
-        
-        <form method="post" action="{% url 'projcommentdb' projc.id %}">
+
+        <form method="post" action="{% url 'projcommentdb' project.id %}">
             {% csrf_token %}
-            <textarea id="commentTextArea" name="comment" rows="8" placeholder="Enter your comment..." class="form-control bg-dark" style="height: 200px;width: 100%;"></textarea>
-            <!-- Hidden textarea to store previous comments -->
-<textarea id="hiddenComments" style="display: none;">{{ projc.comment }}</textarea>
+            <textarea id="commentTextArea" name="comment" rows="8" placeholder="Enter your comment..."
+                class="form-control bg-dark" style="height: 200px;width: 100%;"></textarea>
+            <textarea id="hiddenComments" style="display: none;">{{ project.comment }}</textarea>
 
             <button type="submit" class="btn btn-warning">Save</button>
             <button type="button" class="btn btn-warning mt-1" onclick="viewComment()">View</button>
             <button type="button" class="btn btn-warning mt-1" onclick="clearTextArea()">Clear</button>
         </form>
     </div>
-</div>
-
+</div> -->
 <script>
-    // ... Your existing JavaScript code ...
-
-    function viewComment() {
-        var commentTextArea = document.getElementById("commentTextArea");
-        var hiddenComments = document.getElementById("hiddenComments");
-
-        // Set the textarea value with the value fetched from the database
-        commentTextArea.value = hiddenComments.value;
-
-        var modal = document.getElementById("commentModal");
-        modal.style.display = "block";
-    }
-
-    // ... Your existing JavaScript code ...
-</script>
-    
-
-
-<script>
-    function saveComment() {
-        var comment = document.getElementById("commentTextArea").value;
-        var projId = '{{ proj.id }}'; // Assuming 'proj' variable is passed from Django view
-        var csrfToken = '{{ csrf_token }}'; // Assuming CSRF token is passed from Django template
-
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', '/projcommentdb/' + projId + '/');
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.setRequestHeader('X-CSRFToken', csrfToken);
-
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                console.log('Comment saved:', comment);
-                closeModal();
-            } else {
-                console.error('Failed to save comment:', xhr.statusText);
-            }
-        };
-
-        xhr.send('comment=' + encodeURIComponent(comment));
-    }
-</script>
-
-
-<script>
- // Create an array to store comments
-var comments = [];
-
-function openModal() {
-    var modal = document.getElementById("commentModal");
-    modal.style.display = "block";
-}
-
-function closeModal() {
-    var modal = document.getElementById("commentModal");
-    modal.style.display = "none";
-}
-
-function saveComment() {
-    var comment = document.getElementById("commentTextArea").value;
-    comments.push(comment); // Save the comment to the array
-    console.log("Comment saved:", comment);
-    closeModal();
-}
-
-
-
-function clearTextArea() {
-    var commentTextArea = document.getElementById("commentTextArea");
-    commentTextArea.value = ""; // Clear the text in the textarea
-}
-
-// Close the modal if the user clicks outside of it
-window.onclick = function (event) {
-    var modal = document.getElementById("commentModal");
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
-}
-
-</script>
-<script>
-    let sorted = false; // Keep track of whether the table is sorted
-  
-    // Store the original order of rows
-    const tables = document.getElementById("myTable");
-    const originalRows = Array.from(tables.getElementsByTagName("tr"));
-  
-    // Add event listener to the "Sort" button
-    const sortButton = document.getElementById("sortButton");
-    sortButton.addEventListener("click", function () {
-      if (!sorted) {
-        sortTableByName();
-        sorted = true;
-      } else {
-        restoreOriginalOrder();
-        sorted = false;
-      }
-    });
-  
-    // Function to sort the table by project name in ascending order
-    function sortTableByName() {
-      const rows = Array.from(tables.getElementsByTagName("tr"));
-  
-      rows.sort((a, b) => {
-        const nameA = a.cells[0].innerText.toLowerCase();
-        const nameB = b.cells[0].innerText.toLowerCase();
-        return nameA.localeCompare(nameB);
-      });
-  
-      rows.forEach((row) => tables.appendChild(row));
-    }
-  
-    // Function to restore the original order of rows
-    function restoreOriginalOrder() {
-      originalRows.forEach((row) => tables.appendChild(row));
-    }
-  </script>
-  
-  
-
-
-<script>
-    const searchInput = document.getElementById("vendorSearchInput");
-    const table = document.getElementById("myTable");
-    const tableRows = table.getElementsByTagName("tr");
-  
-    searchInput.addEventListener("keyup", function () {
-      const searchTerm = searchInput.value.toLowerCase();
-  
-      for (let i = 0; i < tableRows.length; i++) {
-        const rowText = tableRows[i].textContent.toLowerCase();
-        if (rowText.includes(searchTerm)) {
-          tableRows[i].style.display = "";
-        } else {
-          tableRows[i].style.display = "none";
-        }
-      }
-    });
-  </script>
-
-<script>
-    // Add event listener to the "Mark as active" button
-    const markActiveButton = document.querySelector('#toggleButton');
-    markActiveButton.addEventListener('click', function() {
-      const projectId = this.getAttribute('data-project-id');
-      const buttonParent = this.parentNode;
-      const buttonClassList = buttonParent.classList;
-  
-      if (buttonClassList.contains('active')) {
-        buttonClassList.remove('active');
-        this.textContent = 'Mark as active';
-      } else {
-        buttonClassList.add('active');
-        this.textContent = 'Mark as inactive';
-      }
-  
-      // Send a request to update the active status in the backend
-      // Replace the URL with the appropriate endpoint to update the active status
-      fetch(`/update-project-status/${projectId}/`)
-        .then(response => {
-          if (response.ok) {
-            console.log('Project status updated successfully.');
-          } else {
-            console.log('Failed to update project status.');
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
-    });
-  </script>
-  
-  
-  
-
-<script>
-   
-
-    function fieldset1_function(){
-        document.getElementById("overview").style.display="block";
-        document.getElementById("comments").style.display="none";
-        document.getElementById("mail").style.display="none";
-        document.getElementById("sentmail").style.display="none";
-        document.getElementById("attach").style.display="none";
-        document.getElementById("doc_list").style.display="none";
-
-
-
-
-
-    }
-    function fieldset2_function(){
-        document.getElementById("overview").style.display="none";
-        document.getElementById("comments").style.display="block";
-        document.getElementById("mail").style.display="none";
-        document.getElementById("sentmail").style.display="none";
-        document.getElementById("attach").style.display="none";
-
-        document.getElementById("doc_list").style.display="none";
-
-
-
-
-    }
-    function fieldset3_function(){
-        document.getElementById("overview").style.display="none";
-        document.getElementById("comments").style.display="none";
-        document.getElementById("mail").style.display="block";
-        document.getElementById("sentmail").style.display="none";
-        document.getElementById("attach").style.display="none";
-        document.getElementById("doc_list").style.display="none";
-
-
-
-
-
-    }
-    function fieldset4_function(){
-        document.getElementById("overview").style.display="none";
-        document.getElementById("comments").style.display="none";
-        document.getElementById("mail").style.display="none";
-        document.getElementById("sentmail").style.display="block";
-        document.getElementById("attach").style.display="none";
-        document.getElementById("doc_list").style.display="none";
-
-
-
-
-
-    }
-    function fieldset5_function(){
-        document.getElementById("overview").style.display="none";
-        document.getElementById("comments").style.display="none";
-        document.getElementById("mail").style.display="none";
-        document.getElementById("sentmail").style.display="none";
-        document.getElementById("attach").style.display="block";
-        document.getElementById("doc_list").style.display="none";
-
-
-
-
-
-    }
-    function fieldset6_function(){
-        document.getElementById("overview").style.display="none";
-        document.getElementById("comments").style.display="none";
-        document.getElementById("mail").style.display="none";
-        document.getElementById("sentmail").style.display="none";
-        document.getElementById("attach").style.display="none";
-        document.getElementById("doc_list").style.display="block";
-
-
-
-
-
-    }
-    function myFunction(){
-        var input,filter,table,tr,td,i,txtValue;
-        input=document.getElementById("myInput");
-        filter=input.value.toUpperCase();
-        table=document.getElementById("myTable");
-        tr=table.getElementsByTagName("tr");
-        for(i = 0; i < tr.length; i++)
-        {
-            td=tr[i].getElementsByTagName("td")[0];
-            if(td){
-                txtValue=td.textContent || td.innerText;
-                if(txtValue.toUpperCase().indexOf(filter) > -1){
-                    tr[i].style.display="";
-                }
-                else{
-                    tr[i].style.display="none";
-                }
-            }
-        }
-    }
-
-    function sortTable()
-    {
-        var table,i,x,y;
-        table=document.getElementById("myTable");
-        var switching=true;
-        while(switching)
-        {
-            switching=false;
-            var rows=table.rows
-            for(i = 0 ; i < (rows.length - 1) ; i++)
-            {
-                var Switch=false;
-                x = rows[i].getElementsByTagName("TD") [0];
-                y = rows[i + 1].getElementsByTagName("TD") [0];
-                if(x.innerText.toLowerCase() > y.innerText.toLowerCase())
-                {
-                    Switch=true;
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Check if the cookie name matches the CSRF cookie name
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                     break;
                 }
-
-            }
-            if(Switch)
-            {
-                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                switching=true
             }
         }
+        return cookieValue;
     }
-      
-      
+    function uploadFile() {
+        const fileInput = document.getElementById("file-input");
+        console.log("entered======================");
+        const file = fileInput.files[0];
+        const csrfToken = getCookie('csrftoken')
+
+        const formData = new FormData();
+        formData.append("file", file);
+        console.log("entered======================");
+
+        fetch("/project_file/{{project.id}}", {
+            method: "POST",
+            headers: { 'X-CSRFToken': csrfToken },
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response from the server (if needed)
+                console.log(data);
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+    }
+
 </script>
+<script>
+    // ... Your existing JavaScript code ...
+
+    jQuery(document).ready(function ($) {
+        $(".clickable-row").click(function () {
+            window.location = $(this).data("href");
+        });
+
+    });
+
+    
+</script>
+
+
+
+
 
 
 

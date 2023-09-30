@@ -730,6 +730,14 @@ class project1(models.Model):
     budget=models.CharField(max_length=255,null=True,blank=True)
     active = models.BooleanField(default = True)
     comment=models.CharField(max_length=255,null=True,blank=True)
+    start=models.DateField(max_length=255,null=True,blank=True)
+    end=models.DateField(max_length=255,null=True,blank=True)
+    
+class projectfiles(models.Model):
+    attachment=models.FileField(upload_to='doc/',null=True)
+    proj=models.ForeignKey(project1,on_delete=models.CASCADE)
+
+
     
     
 class task(models.Model):
@@ -743,7 +751,7 @@ class task(models.Model):
         ('Not Billed', 'Not Billed'),
     ]
     billable = models.CharField(max_length=255,choices=BILLABLE_CHOICES, default='Not Billed',null=True,blank=True)
-    
+    billdate = models.DateField(null=True,blank=True)
 
 class usercreate(models.Model):
     projnn=models.ForeignKey(project1,on_delete=models.CASCADE,null=True,blank=True)

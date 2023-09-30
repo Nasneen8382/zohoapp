@@ -247,13 +247,42 @@
             </select>
           </div>
         </div>
-        <center>
-          <!--<div class="col-sm-12 col-md-6 col-lg-6">
-                         <input  type="checkbox"  name="w_phone" placeholder="work phone" required>
-                            
-                         <label class="col-sm-12 col-md-6 col-lg-6 ">Add budget for this project.</label>
-                     </div>-->
-        </center>
+
+        <div class="form-group row mt-4">
+          <div class="col-sm-12 col-md-3 col-lg-3 col-form-label">
+            <label>Start Date</label>
+          </div>
+          <div class="col-sm-12 col-md-6 col-lg-6">
+            <input type="date" id="startdate" name="start" class="form-control bg-light text-dark">
+          </div>
+        </div>
+
+        <div class="form-group row mt-4">
+          <div class="col-sm-12 col-md-3 col-lg-3 col-form-label">
+            <label>End Date</label>
+          </div>
+          <div class="col-sm-12 col-md-6 col-lg-6">
+            <input type="date" id="enddate" name="end" class="form-control bg-light text-dark">
+          </div>
+        </div>
+        <script>
+          var fromDate;
+         $('#startdate').on('change', function () {
+             fromDate = $(this).val();
+             $('#enddate').prop('min', function () {
+                 return fromDate
+             })
+         })
+         var toDate;
+         $('#enddate').on('change', function () {
+             toDate = $(this).val();
+             $('#startdate').prop('max', function () {
+                 return toDate
+             })
+           })
+     </script>
+
+
 
         <label for="">Users</label><br>
         <table class="table text-black " id="tab_logic">
@@ -328,7 +357,7 @@
                 <label style="color: gainsboro;">Billable</label>
 
               </td>
-              <td class="hidden"><input class="form-control text-dark" type="date" name="billdate"></td>
+              <td id="hidden" style="display: none;"><input class="form-control text-dark" type="date" name="billdate[]"></td>
               <td><button type="button"
                   class="btn btn-transparent text-danger btn-sm btn-outline-danger rounded-circle delete-row"
                   style="width:30px">
@@ -343,9 +372,9 @@
           $(document).ready(function () {
             $("#billable1").change(function () {
               if (this.checked) {
-                $(".hidden").css("display", "block");
+                $("#hidden").css("display", "block");
               } else {
-                $(".hidden").css("display", "none");
+                $("#hidden").css("display", "none");
               }
             });
           });
@@ -354,7 +383,7 @@
         <input  type="checkbox"  name="w_phone" placeholder="work phone" required>
            
         <label class="col-sm-12 col-md-6 col-lg-6 ">Add to the watchlist on my dashboard.</label>
-    </div>-->
+        </div>-->
         <button type="submit" class="btn btn-sm text-white" style="background-color: rgb(210, 132, 30);"
           id="save-btn">Save</button>
         <button type="button" class="btn btn-sm text-white" style="background-color: rgb(210, 132, 30);"
@@ -1921,12 +1950,11 @@
 
         </td>
         <td class="text-center">
-          <input type="checkbox" id="billable1${roinc}" name="billable[]" placeholder="work phone" value="on" >
-
+          <input type="checkbox" id="billable1${roinc}" name="billable[]" placeholder="work phone" value="on">
           <label style="color: gainsboro;">Billable</label>
           
         </td>
-        <td class="hidden${roinc}"><input class="form-control text-dark" type="date" name="billdate"></td>
+        <td id="hidden${roinc}"><input class="form-control text-dark" type="date" name="billdate[]"></td>
         <td ><button type="button" class="btn btn-transparent text-danger btn-sm btn-outline-danger rounded-circle delete-row" id="${roinc}" style="width:30px">
             <i class="fa fa-times"></i>
           </button></td>
@@ -1947,15 +1975,16 @@
         $('.rate-column').show();
       }
     }
+   
     $(document).ready(function () {
-      $("#billable1" + roinc).change(function () {
-        if (this.checked) {
-          $(".hidden" + roinc).css("display", "block");
-        } else {
-          $(".hidden" + roinc).css("display", "none");
-        }
-      });
-    });
+            $("#billable1${roinc}").change(function () {
+              if (this.checked) {
+                $("#hidden${roinc}").css("display", "block");
+              } else {
+                $("#hidden${roinc}").css("display", "none");
+              }
+            });
+          });
   });
 
   $(document).on('click', '.delete-row', function () {
@@ -1986,7 +2015,7 @@
             </select>
           </td>
           <td class="text-right">
-            <input type="email" class="form-control bg-light text-dark" id="email${roinc}" name="email[]">
+            <input type="email" class="form-control bg-light text-dark" id="email1${roinc}" name="email[]">
           </td>
           <td class="text-center">
             <button type="button" class="btn btn-transparent text-danger btn-sm btn-outline-danger rounded-circle remove_row" style="width:30px" id="${roinc}">
@@ -2013,7 +2042,7 @@
           },
           success: function (response) {
             data7 = response.email
-            document.getElementById('email' + roinc).value = data7
+            document.getElementById('email1' + roinc).value = data7
 
           }
         });

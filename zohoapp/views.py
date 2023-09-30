@@ -7498,9 +7498,19 @@ def proj(request):
 def vproj(request):
    
     proj=project1.objects.filter(user=request.user)
-    tsk=task.objects.all()
+    
     active=Project.objects.all()
     company=company_details.objects.get(user=request.user)
+    for i in proj:
+        tsk=task.objects.filter(proj=i)
+        usr=usernamez.objects.filter(projn=i)
+        
+        for j in usr:
+            emp=Payroll.objects.get(id=j.usernamez)
+            i.uname=emp.first_name
+        for j in tsk:
+            i.status= j.billable
+            i.rate= j.taskrph
     return render(request,'projlist.html',{'proj':proj,'tsk':tsk,'active':active,'company':company})
     
     
@@ -7514,6 +7524,8 @@ def addproj(request):
         billing = request.POST.get('billing')
         rateperhour = request.POST.get('rateperhour')
         budget = request.POST.get('budget')
+        start = request.POST.get('start')
+        end = request.POST.get('end')
         #comment=request.POST.get('comment')
 
         taskname1 = request.POST.getlist('taskname[]')
@@ -7523,6 +7535,7 @@ def addproj(request):
         taskrph1 = request.POST.getlist('taskrph[]')
         print(taskrph1)
         billable1 = request.POST.getlist('billable[]')
+        billdate = request.POST.getlist('billdate[]')
         print(billable1)
         user_select1 = request.POST.getlist('user_select[]')
         print(user_select1)
@@ -7530,28 +7543,41 @@ def addproj(request):
         print(email1)
 
 # Ensure all lists have the same length
-        max_length = max(len(taskname1), len(taskdes1), len(taskrph1), len(billable1))
+        max_length = max(len(taskname1), len(taskdes1), len(taskrph1), len(billable1),len(billdate))
         taskname1.extend([''] * (max_length - len(taskname1)))
         taskdes1.extend([''] * (max_length - len(taskdes1)))
         taskrph1.extend([''] * (max_length - len(taskrph1)))
         billable1.extend(['Not Billed'] * (max_length - len(billable1)))
+        billdate.extend([''] * (max_length - len(billdate)))
         
 
         cat = customer.objects.get(id=c_name)
-        proj = project1(name=name, desc=desc, c_name=cat, billing=billing, rateperhour=rateperhour, budget=budget,user=user)
+        proj = project1(name=name, desc=desc, c_name=cat, billing=billing, rateperhour=rateperhour, budget=budget,user=user,start=start,end=end)
         proj.save()
 
-        mapped_tasks = zip(taskname1, taskdes1, taskrph1, billable1)
+        mapped_tasks = zip(taskname1, taskdes1, taskrph1, billable1,billdate)
         mapped_tasks = list(mapped_tasks)
         for ele in mapped_tasks:
             billable = 'Billed' if ele[3] == 'on' else 'Not Billed'
-            tasks, created = task.objects.get_or_create(
+            if ele[3] == 'on' :
+                tasks, created = task.objects.get_or_create(
                 taskname=ele[0],
                 taskdes=ele[1],
                 taskrph=ele[2],
                 proj=proj,
-                billable=billable
-            )
+                billable=billable,
+                billdate=ele[4],
+                )
+            else:
+                tasks, created = task.objects.get_or_create(
+                taskname=ele[0],
+                taskdes=ele[1],
+                taskrph=ele[2],
+                proj=proj,
+                billable=billable,
+                )
+
+
 
         mapped_users = zip(user_select1, email1)
         mapped_users = list(mapped_users)
@@ -7565,23 +7591,16 @@ def addproj(request):
 
 
 def overview(request,id):
-    proj=project1.objects.filter(id=id)
-    projc = get_object_or_404(project1, id=id)
-    print(proj)
+   
     proje=project1.objects.filter(user=request.user)
     usern=usernamez.objects.filter(projn=id)
     taskz=task.objects.filter(proj=id)
-    uc=usercreate.objects.all()
     company=company_details.objects.get(user=request.user)
     project = get_object_or_404(project1, id=id)
-    if request.method == 'POST':
-        comment_text = request.POST.get('comment')
-        if comment_text:
-            projc.comment = comment_text  # Set the comment field of the specific project object
-            projc.save()  # Save the project object with the updated comment
+     # Save the project object with the updated comment
 
 
-    return render(request,'overview.html',{'proj':proj,'proje':proje,'usern':usern,'taskz':taskz,'project':project,'projc':projc,'company':company})
+    return render(request,'overview.html',{'proje':proje,'usern':usern,'taskz':taskz,'project':project,'company':company})
 
 # def comment(request, product_id):
 #     if request.method == 'POST':
@@ -15087,3 +15106,16 @@ def getemployee(request):
     
     print(data7)
     return JsonResponse(data7)
+
+
+def project_file(request,id):
+    print("kjhhkkkkjhhhhhhhhhhhhhhhhh")
+    if request.method == "POST" and request.FILES.get("file"):
+        uploaded_file = request.FILES["file"]
+        proj=project1.objects.get(id=id)
+        p=projectfiles(attachment=uploaded_file,proj=proj)
+        p.save()
+        print("hellooooooooooooooooo")
+        return redirect('overview',id)
+    else:
+        return redirect('overview',id)

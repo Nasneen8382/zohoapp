@@ -729,9 +729,10 @@ urlpatterns = [
 
     path('create_emp', views.create_emp, name='create_emp'),
     path('getemployee', views.getemployee, name='getemployee'),
+    path('project_file/<int:id>', views.project_file, name='project_file'),
 
     
-    re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
+    re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT})
     
     
     
