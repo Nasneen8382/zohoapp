@@ -83,16 +83,22 @@
         height: auto !important;
         margin: auto;
     }
+
     .vertical-line {
-  border-left: 1px solid #ffffff; /* Adjust the color and width as needed */
-  height: 100px; 
-}
-label{
-    font-size: 0.8rem;
-}
-.bold{
-    font-size: 1rem;
-}
+        border-left: 1px solid #ffffff;
+        /* Adjust the color and width as needed */
+        height: 100px;
+    }
+
+    label,
+    .card label {
+        font-size: 0.75rem;
+    }
+
+    .bold,
+    .card .bold {
+        font-size: 1rem;
+    }
 </style>
 
 
@@ -147,9 +153,11 @@ label{
             </div>
             <div class="searchbar pb-4">
                 <div class="left">
-                    <button style="background-color: white;color: rgb(243, 188, 9);" class="btn" id="o-btn">Overview</button>
+                    <button style="background-color: white;color: rgb(243, 188, 9);" class="btn"
+                        id="o-btn">Overview</button>
                     {% if taskz.billable == 'Billed' %}
-                    <button class="btn" style="background-color: rgb(243, 188, 9);color: white;" id="t-btn">Template</button>
+                    <button class="btn" style="background-color: rgb(243, 188, 9);color: white;"
+                        id="t-btn">Template</button>
                     {% endif %}
                 </div>
                 <div class="right align-items-end" id="over-btns">
@@ -164,7 +172,7 @@ label{
                     </label>
                     <input id="file-input" type="file" name="file" style="display:none;" onchange="uploadFile()">
                 </div>
-                
+
                 <div class="right align-items-end" id="temp-btns" style="display: none;">
                     <a class="btn" href="" data-toggle="modal" data-target="#commentModal" data-toggle="tooltip"
                         title="comment"><i class="far fa-comment"></i></a>
@@ -173,110 +181,260 @@ label{
             <hr>
         </div>
         <div id="overview">
-            <div class="p-2">
-                <div class="searchbar p-2" style="font-size: .8rem;width: 100%;">
-                    <div>Start Date: <p class="bold d-inline-block"> {{project.start}}</p> </div>
-                    <div>End Date: <p class="bold d-inline-block"> {{project.end}}</p></div>
-                </div>
-                <div class="text-center p-2" style="background-color: #fefefe28; border-radius: 10px;">
-                    <h3 style="text-transform: uppercase;">{{project.name}}</h3>
-                    <p>{{project.desc}}</p>
-                    <p class="d-inline-block">Status: </p>&nbsp;<p class="bold d-inline-block">{{taskz.billable}}</p>
-                </div>
-                <div class="row mt-3">
-                    <div class="col-lg-6 text-left" style="padding-left: 25px;">
-                        <div class="row  mt-4">
-                            <div class="col-5"><label for="">Customer Name :</label></div><br>
-                            <div class="col-7 ">
-                                <p class="bold">{{project.c_name.customerName}}</p>
-                            </div>
-                        </div>
-                        <div class="row mt-4">
-                            <div class="col-5"><label for="">Email :</label></div>
-                            <div class="col-7">
-                                <p class="bold">{{project.c_name.customerEmail}}</p>
-                            </div>
-                        </div>
-                        
+            <div class="div-to-pdf row" id="div-to-pdf" style="background-color: burlywood;color: #000;">
+                <div class="searchbar pt-2 pb-4" style="font-size: .8rem;width: 100%;font-weight:600;">
+                    <div>Start Date: <p class="bold d-inline-block"> {{project.start}}</p>
                     </div>
-                    <div class=" col-lg-1 vertical-line text-center mt-3"></div>
-                    <div class="col-lg-5 " >
-                       
-                        <div class="row mt-4">
-                            <div class="col-5"><label for="">Billing Method :</label></div>
-                            <div class="col-7">
-                                <p class="bold">{% if project.billing == "Fixed cost for project" or project.billing == "Based on project hours" %}
-                                    {{project.rateperhour}}
-                                    {% else %}
-                                    Per hour
-                                    {% endif %}</p>
-                            </div>
-                        </div>
-                        <div class="row mt-4">
-                            <div class="col-5"><label for="">Budjet Type :</label></div>
-                            <div class="col-7">
-                                <p class="bold">{{project.budget}}</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-lg-6" style="padding-left: 25px;">
-                        <div class="mt-5" style="padding-right: 20px;"><h4>Task Details</h4><hr></div>
-                        <div class="row  mt-4">
-                            <div class="col-5"><label for="">Task :</label></div><br>
-                            <div class="col-7 ">
-                                <p class="bold">{{taskz.taskname}}</p>
-                            </div>
-                        </div>
-                        <div class="row mt-4">
-                            <div class="col-5"><label for="">Description :</label></div>
-                            <div class="col-7">
-                                <p class="bold" style="max-width: 10rem;word-wrap: break-word;">{{taskz.taskdes}}</p>
-                            </div>
-                        </div>
-                        <div class="row mt-4">
-                            <div class="col-5"><label for="">Rate per hour :</label></div>
-                            <div class="col-7">
-                                <p class="bold">{{taskz.taskrph}}</p>
-                            </div>
-                        </div>
-                        {% if taskz.billable == 'Billed' %}
-                        <div class="row mt-4">
-                            <div class="col-5"><label for="">Billed Date :</label></div>
-                            <div class="col-7">
-                                <p class="bold">{{taskz.billdate}}</p>
-                            </div>
-                        </div>
-                        {% endif %}
-                        
-                    </div>
-                    <div class=" col-lg-1 vertical-line text-center" style="margin-top: 130px;height: 150px;"></div>
-                    <div class="col-lg-5 " >
-                        <div class="mt-5" style="padding-right: 20px;"><h4>User Details</h4><hr></div>
-                       
-                        {% for i in usern %}
-                        <div class="row mt-4">
-                            <div class="col-4"><label for="">User name:</label></div>
-                            <div class="col-7">
-                                <p class="bold">{{i.name}}</p>
-                            </div>
-                        </div>
-                        <div class="row mt-4">
-                            <div class="col-4"><label for="">Email:</label></div>
-                            <div class="col-8 text-left">
-                                <p class="bold">{{i.emailz}}</p>
-                            </div>
-                        </div>
-                        {% endfor %}
-                        
+                    <div>End Date: <p class="bold d-inline-block"> {{project.end}}</p>
                     </div>
                 </div>
+
+                <div class="row text-center">
+                    <h3 style="color: #000000;">PROJECT DETAILS
+                        <hr>
+                    </h3>
+                </div>
+                <div class="gen-info col-6 " style="padding-left: 3rem;">
+                    <div class="row my-4">
+                        <div class="col-4"><label for="">Status :</label></div>
+                        <div class="col-8">
+                            <h3 class="text-uppercase">{{taskz.billable}}</h3>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row  mt-5">
+                        <div class="col-5"><label for="">Project :</label></div><br>
+                        <div class="col-7 ">
+                            <h4>{{project.name}}</h4>
+
+                        </div>
+                    </div>
+                    <div class="row  mt-4">
+                        <div class="col-5"><label for="">Description :</label></div><br>
+                        <div class="col-7 ">
+                            <p class="bold">{{project.desc}}</p>
+                        </div>
+                    </div>
+                    <div class="row  mt-4">
+                        <div class="col-5"><label for="">Customer Name :</label></div><br>
+                        <div class="col-7 ">
+                            <p class="bold">{{project.c_name.customerName}}</p>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-5"><label for="">Customer Email :</label></div>
+                        <div class="col-7">
+                            <p class="bold">{{project.c_name.customerEmail}}</p>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-5"><label for="">Billing Method :</label></div>
+                        <div class="col-7">
+                            <p class="bold">
+                                {% if project.billing == "Fixed cost for project" or project.billing == "Based on project hours" %}
+                                {{project.rateperhour}}
+                                {% else %}
+                                Per hour
+                                {% endif %}</p>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-5"><label for="">Budjet Type :</label></div>
+                        <div class="col-7">
+                            <p class="bold">{{project.budget}}</p>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="p-info col-6 my-2">
+                    <div class="card" style="background-color: rgb(110, 61, 46); padding:1rem;color: #ffffff;">
+
+                        <div class="card-title h4 mt-4">User Information
+                            <hr>
+
+                            {% for i in usern %}
+                            <div class="row mt-4">
+                                <div class="col-4"><label for="">User name:</label></div>
+                                <div class="col-7">
+                                    <p class="">{{i.name}}</p>
+                                </div>
+                            </div>
+                            <div class="row mt-4">
+                                <div class="col-4"><label for="">Email:</label></div>
+                                <div class="col-8 text-left">
+                                    <p class="bold">{{i.emailz}}</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            <div class="card-title h4 mt-4">Task Information
+                                <hr>
+                            </div>
+                            <div class="row  mt-4">
+                                <div class="col-5"><label for="">Task :</label></div><br>
+                                <div class="col-7 ">
+                                    <p class="bold">{{taskz.taskname}}</p>
+                                </div>
+                            </div>
+                            <div class="row mt-4">
+                                <div class="col-5"><label for="">Description :</label></div>
+                                <div class="col-7">
+                                    <p class="bold" style="max-width: 10rem;word-wrap: break-word;">{{taskz.taskdes}}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row mt-4">
+                                <div class="col-5"><label for="">Rate per hour :</label></div>
+                                <div class="col-7">
+                                    <p class="bold">{{taskz.taskrph}}</p>
+                                </div>
+                            </div>
+                            {% if taskz.billable == 'Billed' %}
+                            <div class="row mt-4">
+                                <div class="col-5"><label for="">Billed Date :</label></div>
+                                <div class="col-7">
+                                    <p class="bold">{{taskz.billdate}}</p>
+                                </div>
+                            </div>
+                            {% endif %}
+
+
+                        </div>
+                    </div>
+
+                </div>
+
             </div>
         </div>
-        <div style="display: none; background-color: #fefefe;color: #000;" id="template">
-            <h2>Bill template</h2>
-        </div>
+        <div style="display: none;" id="template">
+            <div id="selected-areaa" class="mx-2 my-4 p-4 "
+                    style="background-color: rgba(124, 124, 123, 0.507);">
+                    <div class="slip p-5 convert_to_pdf bg-light" id="whatToPrint"
+                        style="box-shadow: 5px 5px 10px rgb(45, 45, 45);">
+                        <div class="row ">
+                            <div class="col-md-6 pt-4">
+                                <p class="text-dark">Customer :</p>
+                                <h4 class="text-dark" style="text-transform: uppercase;font-weight: bold;">{{project.c_name.customerName}}</h4>
+                                <h6 class="text-dark" style="font-weight: bold">{{project.c_name.customerEmail}}</h6>
+                                    
+                                </h6>
+                            </div>
+                            <div class="col-md-6 text-right ">
+                                <h1 class="text-dark text-uppercase" style="font-size: 2.5rem; ">{{project.name}}</h1>
+                                <h6 class="text-dark" style="font-weight: bold;">{{project.desc}}
+                                </h6>
+                                <h6 class="text-dark" style="font-weight: bold;">Status : {{taskz.billable}}
+                                </h6>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row my-5 py-2">
+                            <div class="col-md-6 mt-auto">
+                                <h6 class="text-dark">Billing Method :</h6>
+                                
+                            </div>
+                            <div class="col-md-6 text-right mt-auto">
+                                <h6 class="text-dark">Budget Type: </h6>
+                            </div>
+                        </div>
 
+
+
+
+                        <table class="table mt-2 " style="border-color: black;">
+                            <thead>
+                                <tr>
+                                    <th style="color: black;font-weight: bold;">#</th>
+                                    <th style="width: 30rem;color: black;font-weight: bold;">Product</th>
+                                    <!-- <th class="text-right;" style="color: black;font-weight: bold;">Hsn</th> -->
+                                    <!-- <th class="text-right;" style="color: black;font-weight: bold;">Description</th> -->
+                                    <th class="text-right;" style="color: black;font-weight: bold;">Quantity</th>
+                                    <th class="text-right;" style="color: black;font-weight: bold;">Price</th>
+                                    <th class="text-right;" style="color: black;font-weight: bold;">Discount</th>
+
+                                    <th class="text-right;" style="color: black;font-weight: bold;">Tax%</th>
+                                    <th class="text-right;" style="color: black;font-weight: bold;">Total</th>
+                                </tr>
+
+                            </thead>
+                            <tbody>
+                                {% for item in invoiceitem %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ item.product }}</td>
+                                    <!-- <td class="text-right">{{ item.hsn }}</td> -->
+                                    <!-- <td class="text-right">{{ item.desc }}</td> -->
+                                    <td class="text-right">{{ item.quantity }}</td>
+                                    <td class="text-right">{{ item.rate|floatformat:1 }}</td>
+                                    <td class="text-right">{{ item.discount|floatformat:1 }}</td>
+
+                                    <td class="text-right">{{ item.tax }}</td>
+                                    <td class="text-right">{{ item.total|floatformat:1 }}</td>
+                                </tr>
+                                {% endfor %}
+
+                            </tbody>
+                        </table>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                <table class="table  mt-2">
+                                    <tr>
+                                        <td class="text-dark" style="font-weight: bold;">Sub-Total:</td>
+                                        <td class="text-right" style="text-align: end;">{{
+                                            invoice.subtotal|floatformat:1 }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-right text-dark">CGST:</td>
+                                        <td class="text-right" style="text-align: end;">{{ invoice.cgst|floatformat:1 }}
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="text-right text-dark">SGST:</td>
+                                        <td class="text-right" style="text-align: end;">{{ invoice.sgst|floatformat:1 }}
+                                        </td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td class="text-right text-dark">IGST:</td>
+                                        <td class="text-right" style="text-align: end;">{{ invoice.igst|floatformat:1 }}
+                                        </td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td class="text-right text-dark">TAX:</td>
+                                        <td class="text-right" style="text-align: end;">{{ invoice.t_tax}}</td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td class="text-right text-dark">Shipping Charge:</td>
+                                        <td class="text-right" style="text-align: end;">{{
+                                            invoice.shipping_charge|floatformat:1 }}</td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td class="text-right text-dark">Adjustment Charge:</td>
+                                        <td class="text-right" style="text-align: end;">{{
+                                            invoice.adjustment|floatformat:1}}</td>
+                                    </tr>
+
+
+                                    <tr>
+
+                                        <td class="text-right text-warning" style="font-weight: bold;">Total:</td>
+
+                                        <td class="text-right " style="font-weight: bold;text-align: end;">{{
+                                            invoice.grandtotal|floatformat:1}}</td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+        </div>
     </div>
 </div>
 
@@ -295,7 +453,10 @@ label{
             <form action="{% url 'add_projectcomment' project.id %}" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="modal-body">
-                    <textarea type="text" class="form-control text-dark" name="comments"></textarea>
+                    <textarea type="text" class="form-control text-dark" name="comments" id="cmt"
+                        placeholder="comment here"></textarea>
+                    <textarea type="text" class="form-control text-dark" name="comment" id="ecmt"
+                        style="display: none;"></textarea>
                     <div class="container-fluid">
 
                         <table class="table  mt-4">
@@ -311,7 +472,9 @@ label{
                                 <tr class="table-row text-light">
                                     <td>{{forloop.counter }}</td>
                                     <td>{{c.comment}}</td>
-                                    <td><a class="text-danger" href="{% url 'delete_payrollcomment' c.id  %}">Delete</a>
+                                    <td style="font-size: 1.2rem;">
+                                        <a class="text-danger" href="{% url 'delete_projectcomment' c.id  %}"><i
+                                                class="fa fa-trash" aria-hidden="true"></i></a>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -323,12 +486,15 @@ label{
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="submit" class="btn btn-primary" id="save">Save</button>
+
                 </div>
             </form>
+
         </div>
     </div>
 </div>
+
 <!-- modal end -->
 
 <!-- Modal -->
@@ -349,26 +515,26 @@ label{
     </div>
 </div> -->
 <script>
-    $(document).ready(function() {
-    $("#o-btn").click(function() {
-      $("#overview").show();
-      $("#over-btns").show();
-      $("#template").hide();
-      $("#temp-btns").hide();
-      $(this).css("background-color", "white").css("color", "rgb(243, 188, 9)"); 
-      $("#t-btn").css("background-color", "rgb(243, 188, 9)").css("color", "white"); 
-    });
+    $(document).ready(function () {
+        $("#o-btn").click(function () {
+            $("#overview").show();
+            $("#over-btns").show();
+            $("#template").hide();
+            $("#temp-btns").hide();
+            $(this).css("background-color", "white").css("color", "rgb(243, 188, 9)");
+            $("#t-btn").css("background-color", "rgb(243, 188, 9)").css("color", "white");
+        });
 
-    $("#t-btn").click(function() {
-      $("#overview").hide();
-      $("#over-btns").hide();
-      $("#template").show();
-      $("#temp-btns").show();
-      $(this).css("background-color", "white").css("color", "rgb(243, 188, 9)");
-      $("#o-btn").css("background-color", "rgb(243, 188, 9)").css("color", "white"); 
+        $("#t-btn").click(function () {
+            $("#overview").hide();
+            $("#over-btns").hide();
+            $("#template").show();
+            $("#temp-btns").show();
+            $(this).css("background-color", "white").css("color", "rgb(243, 188, 9)");
+            $("#o-btn").css("background-color", "rgb(243, 188, 9)").css("color", "white");
 
+        });
     });
-  });
     function getCookie(name) {
         var cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -389,7 +555,7 @@ label{
         console.log("entered======================");
         const file = fileInput.files[0];
         const csrfToken = getCookie('csrftoken')
-
+        location.reload();
         const formData = new FormData();
         formData.append("file", file);
         console.log("entered======================");
@@ -399,6 +565,7 @@ label{
             headers: { 'X-CSRFToken': csrfToken },
             body: formData
         })
+
             .then(response => response.json())
             .then(data => {
                 // Handle the response from the server (if needed)
@@ -407,6 +574,7 @@ label{
             .catch(error => {
                 console.error("Error:", error);
             });
+
     }
 
 </script>

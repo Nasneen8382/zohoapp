@@ -15174,4 +15174,19 @@ def add_projectcomment(request,id):
         comment=request.POST['comments']
         c= projectcomment(comment=comment,proj=p)
         c.save()
+        print("=====================================dddddddddddd")
     return redirect('overview',id)
+
+def delete_projectcomment(request,cid):
+    
+    try:
+        comment = projectcomment.objects.get(id=cid)
+        p=comment.proj
+        # pr=project1.objects.get(id=p)
+        print("================================")
+        comment.delete()
+        return redirect('overview', p.id)
+    except:
+        return redirect('overview', p.id)
+
+        
