@@ -730,6 +730,7 @@ urlpatterns = [
     path('create_emp', views.create_emp, name='create_emp'),
     path('getemployee', views.getemployee, name='getemployee'),
     path('project_file/<int:id>', views.project_file, name='project_file'),
+    path('add_projectcomment/<int:id>', views.add_projectcomment, name='add_projectcomment'),
 
     
     re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT})

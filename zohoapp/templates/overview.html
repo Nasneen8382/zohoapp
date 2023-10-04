@@ -83,6 +83,16 @@
         height: auto !important;
         margin: auto;
     }
+    .vertical-line {
+  border-left: 1px solid #ffffff; /* Adjust the color and width as needed */
+  height: 100px; 
+}
+label{
+    font-size: 0.8rem;
+}
+.bold{
+    font-size: 1rem;
+}
 </style>
 
 
@@ -117,7 +127,7 @@
                     <tr id="over" class='clickable-row' data-href="{% url 'overview' v.id %}">
                         <td><a id="aover" style="color: rgb(230, 171, 45);">{{v.name}}</a></td>
                         <td><a id="aover" style="color: rgb(230, 171, 45);">
-                            {% if v.billing == "Fixed cost for project" or v.billing == "Based on project hours" %}
+                                {% if v.billing == "Fixed cost for project" or v.billing == "Based on project hours" %}
                                 {{v.rateperhour}}
                                 {% else %}
                                 Per hour
@@ -129,94 +139,197 @@
             </table>
         </div>
     </div>
-    <div class="col-sm-12 col-md-8 col-lg-8" style="background-color: #11111196;">
-        
+    <div class="col-sm-12 col-md-8 col-lg-8" style="background-color: #11111196;padding: 0px;">
+
         <div class="row mx-1">
             <div class="header pb-1 pt-3">
-                <h3 style="text-transform: uppercase;">{{ project.name }}</h3>
+                <h4 style="text-transform: uppercase;">{{ project.name }}</h4>
             </div>
             <div class="searchbar pb-4">
                 <div class="left">
-                    <button style="background-color: rgb(243, 188, 9);color: white;"
-                        class="btn">Overview</button>
-                    <button class="btn btn-light text-warning">Template</button>
-                    <!-- <a class="btn mx-1" href="#home">Overview</a> -->
+                    <button style="background-color: white;color: rgb(243, 188, 9);" class="btn" id="o-btn">Overview</button>
+                    {% if taskz.billable == 'Billed' %}
+                    <button class="btn" style="background-color: rgb(243, 188, 9);color: white;" id="t-btn">Template</button>
+                    {% endif %}
                 </div>
-                <div class="right align-items-end">
+                <div class="right align-items-end" id="over-btns">
                     <a class="btn " href="{% url 'editproj' project.id %}" data-toggle="tooltip" title="Edit"><i
                             class="fas fa-edit"></i></a>
                     <a class="btn" href="{% url 'delproj' project.id %}" data-toggle="tooltip" title="Delete"><i
                             class="fas fa-trash"></i></a>
-                            <a class="btn" href="" data-toggle="modal" data-target="#commentModal"
-                            data-toggle="tooltip" title="comment"><i class="far fa-comment"></i></a>
+                    <a class="btn" href="" data-toggle="modal" data-target="#commentModal" data-toggle="tooltip"
+                        title="comment"><i class="far fa-comment"></i></a>
                     <label for="file-input" class="btn ml-1 border-0" data-toggle="tooltip" title="Upload Attachments">
                         <i class="fas fa-paperclip"></i>
                     </label>
                     <input id="file-input" type="file" name="file" style="display:none;" onchange="uploadFile()">
                 </div>
+                
+                <div class="right align-items-end" id="temp-btns" style="display: none;">
+                    <a class="btn" href="" data-toggle="modal" data-target="#commentModal" data-toggle="tooltip"
+                        title="comment"><i class="far fa-comment"></i></a>
+                </div>
             </div>
             <hr>
         </div>
-        <div>
-            <div class="searchbar pt-2 pb-4">
-                <div></div>
-                <div class="align-items-end right" style="font-size: 1rem;">Start Date: {{project.start}} <br>End Date: {{p.end}}</div>
-            </div>
-        </div>
-        
-       
-        <!-- modal -->
-        <div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content" style="background-color: #3b3b3b;">
-                <div class="modal-header">
-                    <h3 class="modal-title" id="exampleModalLabel">Add Comments</h3>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+        <div id="overview">
+            <div class="p-2">
+                <div class="searchbar p-2" style="font-size: .8rem;width: 100%;">
+                    <div>Start Date: <p class="bold d-inline-block"> {{project.start}}</p> </div>
+                    <div>End Date: <p class="bold d-inline-block"> {{project.end}}</p></div>
                 </div>
-
-                <form action="" method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="modal-body">
-                        <textarea type="text" class="form-control text-dark" name="comments"></textarea>
-                        <div class="container-fluid">
-
-                            <table class="table  mt-4">
-                                <thead>
-                                    <tr>
-                                        <th>sl no.</th>
-                                        <th>Comments</th>
-                                        <th>Delete</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for c in com %}
-                                    <tr class="table-row">
-                                        <td>{{forloop.counter }}</td>
-                                        <td>{{c.comment}}</td>
-                                        <td><a class="text-danger"
-                                                href="{% url 'delete_payrollcomment' c.id  %}">Delete</a></td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+                <div class="text-center p-2" style="background-color: #fefefe28; border-radius: 10px;">
+                    <h3 style="text-transform: uppercase;">{{project.name}}</h3>
+                    <p>{{project.desc}}</p>
+                    <p class="d-inline-block">Status: </p>&nbsp;<p class="bold d-inline-block">{{taskz.billable}}</p>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-lg-6 text-left" style="padding-left: 25px;">
+                        <div class="row  mt-4">
+                            <div class="col-5"><label for="">Customer Name :</label></div><br>
+                            <div class="col-7 ">
+                                <p class="bold">{{project.c_name.customerName}}</p>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-5"><label for="">Email :</label></div>
+                            <div class="col-7">
+                                <p class="bold">{{project.c_name.customerEmail}}</p>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class=" col-lg-1 vertical-line text-center mt-3"></div>
+                    <div class="col-lg-5 " >
+                       
+                        <div class="row mt-4">
+                            <div class="col-5"><label for="">Billing Method :</label></div>
+                            <div class="col-7">
+                                <p class="bold">{% if project.billing == "Fixed cost for project" or project.billing == "Based on project hours" %}
+                                    {{project.rateperhour}}
+                                    {% else %}
+                                    Per hour
+                                    {% endif %}</p>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-5"><label for="">Budjet Type :</label></div>
+                            <div class="col-7">
+                                <p class="bold">{{project.budget}}</p>
+                            </div>
                         </div>
                     </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-
-                        <button type="submit" class="btn btn-primary">Save</button>
+                    
+                    <div class="col-lg-6" style="padding-left: 25px;">
+                        <div class="mt-5" style="padding-right: 20px;"><h4>Task Details</h4><hr></div>
+                        <div class="row  mt-4">
+                            <div class="col-5"><label for="">Task :</label></div><br>
+                            <div class="col-7 ">
+                                <p class="bold">{{taskz.taskname}}</p>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-5"><label for="">Description :</label></div>
+                            <div class="col-7">
+                                <p class="bold" style="max-width: 10rem;word-wrap: break-word;">{{taskz.taskdes}}</p>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-5"><label for="">Rate per hour :</label></div>
+                            <div class="col-7">
+                                <p class="bold">{{taskz.taskrph}}</p>
+                            </div>
+                        </div>
+                        {% if taskz.billable == 'Billed' %}
+                        <div class="row mt-4">
+                            <div class="col-5"><label for="">Billed Date :</label></div>
+                            <div class="col-7">
+                                <p class="bold">{{taskz.billdate}}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
                     </div>
-                </form>
+                    <div class=" col-lg-1 vertical-line text-center" style="margin-top: 130px;height: 150px;"></div>
+                    <div class="col-lg-5 " >
+                        <div class="mt-5" style="padding-right: 20px;"><h4>User Details</h4><hr></div>
+                       
+                        {% for i in usern %}
+                        <div class="row mt-4">
+                            <div class="col-4"><label for="">User name:</label></div>
+                            <div class="col-7">
+                                <p class="bold">{{i.name}}</p>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-4"><label for="">Email:</label></div>
+                            <div class="col-8 text-left">
+                                <p class="bold">{{i.emailz}}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-        <!-- modal end -->
+        <div style="display: none; background-color: #fefefe;color: #000;" id="template">
+            <h2>Bill template</h2>
+        </div>
+
     </div>
 </div>
+
+<!-- modal -->
+<div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="background-color: #3b3b3b;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLabel">Add Comments</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form action="{% url 'add_projectcomment' project.id %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <textarea type="text" class="form-control text-dark" name="comments"></textarea>
+                    <div class="container-fluid">
+
+                        <table class="table  mt-4">
+                            <thead>
+                                <tr>
+                                    <th>sl no.</th>
+                                    <th>Comments</th>
+                                    <th>Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for c in cmt %}
+                                <tr class="table-row text-light">
+                                    <td>{{forloop.counter }}</td>
+                                    <td>{{c.comment}}</td>
+                                    <td><a class="text-danger" href="{% url 'delete_payrollcomment' c.id  %}">Delete</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- modal end -->
 
 <!-- Modal -->
 <!-- <div id="commentModal" class="modal">
@@ -236,6 +349,26 @@
     </div>
 </div> -->
 <script>
+    $(document).ready(function() {
+    $("#o-btn").click(function() {
+      $("#overview").show();
+      $("#over-btns").show();
+      $("#template").hide();
+      $("#temp-btns").hide();
+      $(this).css("background-color", "white").css("color", "rgb(243, 188, 9)"); 
+      $("#t-btn").css("background-color", "rgb(243, 188, 9)").css("color", "white"); 
+    });
+
+    $("#t-btn").click(function() {
+      $("#overview").hide();
+      $("#over-btns").hide();
+      $("#template").show();
+      $("#temp-btns").show();
+      $(this).css("background-color", "white").css("color", "rgb(243, 188, 9)");
+      $("#o-btn").css("background-color", "rgb(243, 188, 9)").css("color", "white"); 
+
+    });
+  });
     function getCookie(name) {
         var cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -287,7 +420,7 @@
 
     });
 
-    
+
 </script>
 
 

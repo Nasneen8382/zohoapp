@@ -7593,14 +7593,21 @@ def addproj(request):
 def overview(request,id):
    
     proje=project1.objects.filter(user=request.user)
-    usern=usernamez.objects.filter(projn=id)
-    taskz=task.objects.filter(proj=id)
+   
     company=company_details.objects.get(user=request.user)
     project = get_object_or_404(project1, id=id)
+    taskz=task.objects.get(proj=project)
+    usern=usernamez.objects.filter(projn=project)
+    for i in usern:
+        emp= Payroll.objects.get(id=i.usernamez)
+        fname= emp.first_name
+        lname = emp.last_name
+        i.name = fname+ " "+lname
+    cmt=projectcomment.objects.filter(proj=id)
      # Save the project object with the updated comment
 
 
-    return render(request,'overview.html',{'proje':proje,'usern':usern,'taskz':taskz,'project':project,'company':company})
+    return render(request,'overview.html',{'proje':proje,'usern':usern,'taskz':taskz,'project':project,'company':company,'cmt':cmt})
 
 # def comment(request, product_id):
 #     if request.method == 'POST':
@@ -7645,10 +7652,16 @@ def editproj(request,id):
     proje=project1.objects.all()
     data=customer.objects.all()
     uc=usercreate.objects.all()
-    usern=usernamez.objects.filter(projn=id)
+    usern=usernamez.objects.filter(projn=proj)
     taskz=task.objects.filter(proj=id)
     company=company_details.objects.get(user=request.user)
-    return render(request,'editoverview.html',{'data':data,'proj':proj,'proje':proje,'uc':uc,'usern':usern,'taskz':taskz,'company':company})
+    for i in usern:
+        emp= Payroll.objects.get(id=i.usernamez)
+        fname= emp.first_name
+        lname = emp.last_name
+        i.name = fname+ " "+lname
+    emp= Payroll.objects.all()
+    return render(request,'editoverview.html',{'data':data,'proj':proj,'proje':proje,'uc':uc,'usern':usern,'taskz':taskz,'company':company,'emp':emp})
     
     
     
@@ -7661,47 +7674,82 @@ def editprojdb(request,id):
         proj.billing = request.POST.get('billing')
         proj.rateperhour = request.POST.get('rateperhour')
         proj.budget = request.POST.get('budget')
+        proj.start = request.POST.get('start')
+        proj.end = request.POST.get('end')
 
-        taskname1 = request.POST.getlist('taskname[]')
-        print(taskname1)
-        taskdes1 = request.POST.getlist('taskdes[]')
-        print(taskdes1)
-        taskrph1 = request.POST.getlist('taskrph[]')
-        print(taskrph1)
-        billable1 = request.POST.getlist('billable[]')
-        print(billable1)
-        user_select1 = request.POST.getlist('user_select[]')
-        print(user_select1)
-        email1 = request.POST.getlist('email[]')
-        print(email1)
+        # taskname1 = request.POST.getlist('taskname[]')
+        # print(taskname1)
+        # taskdes1 = request.POST.getlist('taskdes[]')
+        # print(taskdes1)
+        # taskrph1 = request.POST.getlist('taskrph[]')
+        # print(taskrph1)
+        # billable1 = request.POST.getlist('billable[]')
+        # billdate = request.POST.getlist('billdate[]')
+        # print(billable1)
+        # user_select1 = request.POST.getlist('user_select[]')
+        # print(user_select1)
+        # email1 = request.POST.getlist('email[]')
+        # print(email1)
        
         
         proj.save()
 
+        tsk = task.objects.get(proj=proj)
+        tsk.taskname =request.POST.get('taskname')
+        tsk.taskdes=request.POST.get('taskdes')
+        tsk.taskrph=request.POST.get('taskrph')
+        billable = request.POST.get("billable")
+        if billable == 'on' :
+            tsk.billable = 'Billed'
+            tsk.billdate= request.POST.get('billdate')
+        else:
+            tsk.billable = 'Not Billed'
+        print("saved")
+        tsk.save()
+
+        usr = usernamez.objects.get(projn=proj)
+        usr.usernamez =request.POST.get('user_select')
+        usr.emailz =request.POST.get('email')
+        print("user")
+        usr.save()
         # Delete existing usernamez objects for the project
-        usernamez.objects.filter(projn=proj).delete()
+        # usernamez.objects.filter(projn=proj).delete()
 
 
-        objects_to_delete = task.objects.filter(proj_id=proj.id)
-        objects_to_delete.delete()
+        # objects_to_delete = task.objects.filter(proj_id=proj.id)
+        # objects_to_delete.delete()
 
         
-        mapped_tasks = zip(taskname1, taskdes1, taskrph1, billable1)
-        mapped_tasks = list(mapped_tasks)
-        for ele in mapped_tasks:
-            billable = 'Billed' if ele[3] == 'on' else 'Not Billed'
-            tasks, created = task.objects.get_or_create(
-                taskname=ele[0], taskdes=ele[1], taskrph=ele[2], billable=billable, proj=proj
-            )
+        # mapped_tasks = zip(taskname1, taskdes1, taskrph1, billable1,billdate)
+        # mapped_tasks = list(mapped_tasks)
+        # for ele in mapped_tasks:
+        #     billable = 'Billed' if ele[3] == 'on' else 'Not Billed'
+        #     if ele[3] == 'on' :
+        #         tasks, created = task.objects.get_or_create(
+        #         taskname=ele[0],
+        #         taskdes=ele[1],
+        #         taskrph=ele[2],
+        #         proj=proj,
+        #         billable=billable,
+        #         billdate=ele[4],
+        #         )
+        #     else:
+        #         tasks, created = task.objects.get_or_create(
+        #         taskname=ele[0],
+        #         taskdes=ele[1],
+        #         taskrph=ele[2],
+        #         proj=proj,
+        #         billable=billable,
+        #         )
 
 
 
-        mapped_users = zip(user_select1, email1)
-        mapped_users = list(mapped_users)
-        for elez in mapped_users:
-            usrz, varez = usernamez.objects.get_or_create(
-                usernamez=elez[0], emailz=elez[1], projn=proj
-            )
+        # mapped_users = zip(user_select1, email1)
+        # mapped_users = list(mapped_users)
+        # for elez in mapped_users:
+        #     usrz, varez = usernamez.objects.get_or_create(
+        #         usernamez=elez[0], emailz=elez[1], projn=proj
+        #     )
 
         
         return redirect('overview',id)
@@ -15119,3 +15167,11 @@ def project_file(request,id):
         return redirect('overview',id)
     else:
         return redirect('overview',id)
+    
+def add_projectcomment(request,id):
+    p=project1.objects.get(id=id)
+    if request.method== 'POST':
+        comment=request.POST['comments']
+        c= projectcomment(comment=comment,proj=p)
+        c.save()
+    return redirect('overview',id)

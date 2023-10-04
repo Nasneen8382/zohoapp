@@ -1408,6 +1408,13 @@ class JournalComment(models.Model):
         return f"Comment by {self.user.username} on Journal {self.journal.journal_no}"    
     
 
+
+
+    # ===========================Nasneen O M===============================
+class projectcomment(models.Model):
+    comment=models.CharField(max_length=300)
+    proj=models.ForeignKey(project1,on_delete=models.CASCADE)
+
 class Events(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255,null=True,blank=True)

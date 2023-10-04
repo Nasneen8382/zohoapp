@@ -1701,7 +1701,7 @@
 <script>
   $(document).on('change', '#user_select', function () {
     var employee = $('#user_select').val();
-    console.log(customer)
+    console.log(employee)
     $.ajax({
       type: "GET",
       url: "{% url 'getemployee' %}",
