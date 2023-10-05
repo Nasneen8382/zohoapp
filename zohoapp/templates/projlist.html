@@ -85,29 +85,27 @@
         </div>
       </div>
       <div class="searchbar pt-5 pb-4">
-        <div class="left">
+        <div class="left" style="display: grid;grid-template-columns: 1fr 1fr;">
           <input type="text" id="vendorSearchInput" class="form-control bg-light text-dark" placeholder="Search Projects...">
-
+          <a class="btn btn-outline-primary mx-2" href="" data-bs-toggle="dropdown" aria-haspopup="true"
+          aria-expanded="false" role="button" style="width: 8vw;">
+          <i class="fa fa-sort"></i> Sort
+      </a>
+      <div class="dropdown-menu ">
+          <a class="dropdown-item" href="javascript:sortTable(0)">Name A-Z</a>
+          <a class="dropdown-item" href="javascript:rsortTable(0)">Name Z-A</a>
+      </div>
         </div>
         <div class="right">
-          <a class="btn btn-outline-primary px-3" href="" data-bs-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="false" role="button">
-                    <i class="fa fa-sort mx-3"></i>
-                </a>
-                <div class="dropdown-menu ">
-                    <a class="dropdown-item" href="javascript:sortTable(0)">Name A-Z</a>
-                    <a class="dropdown-item" href="javascript:rsortTable(0)">Name Z-A</a>
-                </div>
-          <a class="btn text-center px-3 " data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+          
+          <a class="btn text-center px-3" href="" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
           role="button"><i class="fa fa-filter mx-3"></i>
           </a>
-          <div class="dropdown-menu ">
-              <a class="dropdown-item" href="" style="color:rgb(218, 164, 48) ;">All</a>
-              <a class="dropdown-item" href="#" style="color:rgb(218, 164, 48) ;" id="sortCustomer">Customer</a>
-              <a class="dropdown-item" href="#" style="color:rgb(218, 164, 48) ;" id="sortProject">Project</a>
-
+          <div class="dropdown-menu" id="filterMenu">
+              <a class="dropdown-item" href="#" style="color:rgb(218, 164, 48) ;" data-value="All">All</a>
+              <a class="dropdown-item" href="#" style="color:rgb(218, 164, 48) ;" data-value="Billed">Billed</a>
+              <a class="dropdown-item" href="#" style="color:rgb(218, 164, 48) ;" data-value="Not Billed">Not Billed</a>
           </div>
-         
           <a class="btn btn-outline-primary" href="{% url 'proj' %}"><i class="fa fa-plus"></i>NEW</a>
         </div>
 
@@ -135,7 +133,7 @@
       
     
         
-              <table class="table text-white" id="vendorTable">
+              <table class="table text-white" id="mytable">
                 <thead>
                   <tr>
                     <th>PROJECT NAME</th>
@@ -178,8 +176,100 @@
 </div>
 
 
-
 <script>
+   const filterMenuLinks = document.querySelectorAll('#filterMenu a');
+        const table = document.getElementById('mytable').getElementsByTagName('tr');
+
+        for (const link of filterMenuLinks) {
+            link.addEventListener('click', filterTable);
+        }
+
+        function filterTable(event) {
+            event.preventDefault(); // Prevent the link's default behavior (page navigation).
+
+            const selectedValue = this.getAttribute('data-value');
+            // console.log(selectedValue);
+
+            for (let i = 1; i < table.length; i++) {
+                const row = table[i];
+                const status = row.getElementsByTagName('td')[7].innerText;
+
+                if (selectedValue === 'All' || status.toLowerCase() === selectedValue.toLowerCase()) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        }
+</script>
+<script>
+  function sortTable(columnIndex) {
+        let sortAscending = false
+        const table = document.getElementById("mytable");
+        const rows = Array.from(table.rows).slice(1); // Exclude the header row
+
+        rows.sort((row1, row2) => {
+            const cellValue1 = row1.cells[columnIndex].textContent.toLowerCase();
+            const cellValue2 = row2.cells[columnIndex].textContent.toLowerCase();
+
+            if (cellValue1 < cellValue2) {
+                return -1;
+            } else if (cellValue1 > cellValue2) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
+
+        // Clear the table body
+        while (table.rows.length > 1) {
+            table.deleteRow(1);
+        }
+
+        // Append the sorted rows back to the table
+        rows.forEach(row => table.appendChild(row));
+        sortAscending = !sortAscending;
+    }
+
+    function rsortTable(columnIndex) {
+        let sortAscending = false
+        const table = document.getElementById("mytable");
+        const rows = Array.from(table.rows).slice(1); // Exclude the header row
+
+        rows.sort((row1, row2) => {
+            const cellValue1 = row1.cells[columnIndex].textContent.toLowerCase();
+            const cellValue2 = row2.cells[columnIndex].textContent.toLowerCase();
+
+            if (sortAscending) {
+                if (cellValue1 < cellValue2) {
+                    return -1;
+                } else if (cellValue1 > cellValue2) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            } else {
+                if (cellValue1 > cellValue2) {
+                    return -1;
+                } else if (cellValue1 < cellValue2) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        });
+
+        // Clear the table body
+        while (table.rows.length > 1) {
+            table.deleteRow(1);
+        }
+
+        // Append the sorted rows back to the table
+        rows.forEach(row => table.appendChild(row));
+
+        // Toggle the sorting order for the next click
+        sortAscending = !sortAscending;
+    }
   jQuery(document).ready(function($) {
     $(".clickable-row").click(function() {
         window.location = $(this).data("href");

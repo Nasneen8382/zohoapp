@@ -109,12 +109,19 @@
         </div>
         <div class="searchbar pb-1">
 
-            <input class="form-control mx-1" type="text" placeholder="Search Project" name="search" id="search"
+            <input class="form-control text-dark" type="text" placeholder="Search Project" name="search" id="search"
                 onkeyup="searchFunction()">
 
-            <a class="btn btn-outline-primary mr-1" href="{% url 'payroll_create' %}"><i class="fa fa-sort"></i></a>
+                <a class="btn btn-outline-warning mx-1" href="" data-bs-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false" role="button">
+                <i class="fa fa-sort"></i>
+            </a>
+            <div class="dropdown-menu ">
+                <a class="dropdown-item" href="javascript:sortTable(0)">Name A-Z</a>
+                <a class="dropdown-item" href="javascript:rsortTable(0)">Name Z-A</a>
+            </div>
 
-            <a class="btn btn-outline-primary mx-1" href="" data-bs-toggle="dropdown" aria-haspopup="true"
+            <a class="btn btn-outline-warning mx-1" href="" data-bs-toggle="dropdown" aria-haspopup="true"
                 aria-expanded="false" role="button">
                 <i class="fa fa-filter"></i>
             </a>
@@ -122,7 +129,7 @@
                 <a class="dropdown-item" href="javascript:sortTable(0)">Name A-Z</a>
                 <a class="dropdown-item" href="javascript:rsortTable(0)">Name Z-A</a>
             </div>
-            <a class="btn btn-outline-primary" href="{% url 'payroll_create' %}"><i class="fa fa-plus"></i></a>
+            <a class="btn btn-outline-warning" href="{% url 'proj' %}"><i class="fa fa-plus"></i></a>
         </div>
         <hr>
         <div style="height:60vh;overflow-y: scroll;overflow-x: hidden; ">
@@ -174,14 +181,63 @@
                 </div>
 
                 <div class="right align-items-end" id="temp-btns" style="display: none;">
-                    <a class="btn" href="" data-toggle="modal" data-target="#commentModal" data-toggle="tooltip"
-                        title="comment"><i class="far fa-comment"></i></a>
+                    <a class="btn btn_pdf ml-1" href="" id="convertToPDFButton" data-toggle="tooltip" title="Pdf"><i
+                            class="mdi mdi-file-pdf"></i></a>
+                    <a class="btn btn_print ml-1" href="" data-toggle="tooltip" title="Print"><i
+                            class="mdi mdi-printer"></i></a>
                 </div>
             </div>
             <hr>
         </div>
+        <script type="text/javascript">
+            $(document).ready(function ($) {
+                console.log('print');
+
+                $(document).on('click', '.btn_pdf', function (event) {
+                    console.log('print1');
+                    event.preventDefault();
+                    var element = document.getElementById('div-to-pdf');
+                    var opt =
+                    {
+                        margin: 0,
+                        filename: 'project' + '.pdf',
+                        image: { type: 'jpeg', quality: 0.98 },
+                        html2canvas: { scale: 2 },
+                        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+                    };
+                    html2pdf().set(opt).from(element).save();
+
+                });
+
+
+
+                $(document).on('click', '.btn_print', function (event) {
+                    event.preventDefault();
+
+
+                    const pdfCard = document.getElementById('div-to-pdf').cloneNode(true);
+
+                    // Create a new window for printing
+                    const printWindow = window.open('', '');
+
+                    printWindow.document.body.appendChild(pdfCard);
+
+
+                    printWindow.print();
+
+                    // Close the new window after printing
+                    printWindow.close();
+                    
+
+
+                });
+
+            });
+
+
+        </script>
         <div id="overview">
-            <div class="div-to-pdf row" id="div-to-pdf" style="background-color: burlywood;color: #000;">
+            <div class=" row" style="background-color: burlywood;color: #000;">
                 <div class="searchbar pt-2 pb-4" style="font-size: .8rem;width: 100%;font-weight:600;">
                     <div>Start Date: <p class="bold d-inline-block"> {{project.start}}</p>
                     </div>
@@ -306,134 +362,98 @@
             </div>
         </div>
         <div style="display: none;" id="template">
-            <div id="selected-areaa" class="mx-2 my-4 p-4 "
-                    style="background-color: rgba(124, 124, 123, 0.507);">
-                    <div class="slip p-5 convert_to_pdf bg-light" id="whatToPrint"
-                        style="box-shadow: 5px 5px 10px rgb(45, 45, 45);">
-                        <div class="row ">
-                            <div class="col-md-6 pt-4">
-                                <p class="text-dark">Customer :</p>
-                                <h4 class="text-dark" style="text-transform: uppercase;font-weight: bold;">{{project.c_name.customerName}}</h4>
-                                <h6 class="text-dark" style="font-weight: bold">{{project.c_name.customerEmail}}</h6>
-                                    
-                                </h6>
-                            </div>
-                            <div class="col-md-6 text-right ">
-                                <h1 class="text-dark text-uppercase" style="font-size: 2.5rem; ">{{project.name}}</h1>
-                                <h6 class="text-dark" style="font-weight: bold;">{{project.desc}}
-                                </h6>
-                                <h6 class="text-dark" style="font-weight: bold;">Status : {{taskz.billable}}
-                                </h6>
-                            </div>
+            <div id="div-to-pdf" class="mx-2 my-4 p-4 ">
+                <div class="slip p-5 convert_to_pdf bg-light" id="whatToPrint"
+                    style="box-shadow: 5px 5px 10px rgb(45, 45, 45);">
+                    <!-- <div class="header text-dark">
+                            <h5>Bill</h5>
+                            <hr>
+                        </div> -->
+                    <div class="row ">
+                        <div class="col-md-6 pt-4">
+                            <p class="text-dark">Customer :</p>
+                            <h4 class="text-dark" style="text-transform: uppercase;font-weight: bold;">
+                                {{project.c_name.customerName}}</h4>
+                            <h6 class="text-dark" style="font-weight: bold">{{project.c_name.customerEmail}}</h6>
+
+                            </h6>
                         </div>
-                        <hr>
-                        <div class="row my-5 py-2">
-                            <div class="col-md-6 mt-auto">
-                                <h6 class="text-dark">Billing Method :</h6>
-                                
-                            </div>
-                            <div class="col-md-6 text-right mt-auto">
-                                <h6 class="text-dark">Budget Type: </h6>
-                            </div>
+                        <div class="col-md-6 text-right ">
+                            <h4 class="text-dark">{{company.company_name}}</h4>
+                            <h1 class="text-dark text-uppercase" style="font-size: 2.5rem; ">{{project.name}}</h1>
+                            <h6 class="text-dark" style="font-weight: bold;max-width: 15rem;word-wrap: break-word;">
+                                {{project.desc}}
+                            </h6>
+                            <h6 class="text-dark" style="font-weight: bold;">Status : {{taskz.billable}}
+                            </h6>
                         </div>
+                    </div>
+                    <hr>
+                    <div class="row my-5 py-2">
+                        <div class="col-md-6 mt-auto">
+                            <h6 class="text-dark">Billing Method :
+                                {% if project.billing == "Fixed cost for project" or project.billing == "Based on project hours" %}
+                                {{project.rateperhour}}
+                                {% else %}
+                                Per hour
+                                {% endif %}
+                            </h6>
+
+                        </div>
+                        <div class="col-md-6 text-right mt-auto">
+                            <h6 class="text-dark">Budget Type: {{project.budget}}</h6>
+                        </div>
+                    </div>
 
 
 
 
-                        <table class="table mt-2 " style="border-color: black;">
-                            <thead>
+
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <table class="table  mt-2 pb-3">
                                 <tr>
-                                    <th style="color: black;font-weight: bold;">#</th>
-                                    <th style="width: 30rem;color: black;font-weight: bold;">Product</th>
-                                    <!-- <th class="text-right;" style="color: black;font-weight: bold;">Hsn</th> -->
-                                    <!-- <th class="text-right;" style="color: black;font-weight: bold;">Description</th> -->
-                                    <th class="text-right;" style="color: black;font-weight: bold;">Quantity</th>
-                                    <th class="text-right;" style="color: black;font-weight: bold;">Price</th>
-                                    <th class="text-right;" style="color: black;font-weight: bold;">Discount</th>
-
-                                    <th class="text-right;" style="color: black;font-weight: bold;">Tax%</th>
-                                    <th class="text-right;" style="color: black;font-weight: bold;">Total</th>
+                                    <td class="text-dark" style="font-weight: bold;">Task:</td>
+                                    <td class="text-right text-dark" style="text-align: end;">{{taskz.taskname}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right text-dark">Description:</td>
+                                    <td class="text-right text-dark" style="text-align: end;">{{taskz.taskdes}}
+                                    </td>
                                 </tr>
 
-                            </thead>
-                            <tbody>
-                                {% for item in invoiceitem %}
                                 <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{ item.product }}</td>
-                                    <!-- <td class="text-right">{{ item.hsn }}</td> -->
-                                    <!-- <td class="text-right">{{ item.desc }}</td> -->
-                                    <td class="text-right">{{ item.quantity }}</td>
-                                    <td class="text-right">{{ item.rate|floatformat:1 }}</td>
-                                    <td class="text-right">{{ item.discount|floatformat:1 }}</td>
+                                    <td class="text-right text-dark">Rate per hour:</td>
+                                    <td class="text-right text-dark" style="text-align: end;">{{taskz.taskrph}} INR
+                                    </td>
+                                </tr>
 
-                                    <td class="text-right">{{ item.tax }}</td>
-                                    <td class="text-right">{{ item.total|floatformat:1 }}</td>
+                                <tr>
+                                    <td class="text-right text-dark">Bill date:</td>
+                                    <td class="text-right text-dark" style="text-align: end;">{{taskz.billdate}}
+                                    </td>
+                                </tr>
+                                {% for i in usern %}
+                                <tr>
+                                    <td class="text-dark" style="font-weight: bold;">User Name:</td>
+                                    <td class="text-right text-dark" style="text-align: end;">{{i.name}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-dark" style="font-weight: bold;">User email:</td>
+                                    <td class="text-right text-dark" style="text-align: end;">{{i.emailz}}</td>
                                 </tr>
                                 {% endfor %}
 
-                            </tbody>
-                        </table>
-                        <div class="row">
-                            <div class="col-sm-12 col-md-12 col-lg-12">
-                                <table class="table  mt-2">
-                                    <tr>
-                                        <td class="text-dark" style="font-weight: bold;">Sub-Total:</td>
-                                        <td class="text-right" style="text-align: end;">{{
-                                            invoice.subtotal|floatformat:1 }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-right text-dark">CGST:</td>
-                                        <td class="text-right" style="text-align: end;">{{ invoice.cgst|floatformat:1 }}
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td class="text-right text-dark">SGST:</td>
-                                        <td class="text-right" style="text-align: end;">{{ invoice.sgst|floatformat:1 }}
-                                        </td>
-                                    </tr>
-                                    
-                                    <tr>
-                                        <td class="text-right text-dark">IGST:</td>
-                                        <td class="text-right" style="text-align: end;">{{ invoice.igst|floatformat:1 }}
-                                        </td>
-                                    </tr>
-                                    
-                                    <tr>
-                                        <td class="text-right text-dark">TAX:</td>
-                                        <td class="text-right" style="text-align: end;">{{ invoice.t_tax}}</td>
-                                    </tr>
-                                    
-                                    <tr>
-                                        <td class="text-right text-dark">Shipping Charge:</td>
-                                        <td class="text-right" style="text-align: end;">{{
-                                            invoice.shipping_charge|floatformat:1 }}</td>
-                                    </tr>
-                                    
-                                    <tr>
-                                        <td class="text-right text-dark">Adjustment Charge:</td>
-                                        <td class="text-right" style="text-align: end;">{{
-                                            invoice.adjustment|floatformat:1}}</td>
-                                    </tr>
 
 
-                                    <tr>
-
-                                        <td class="text-right text-warning" style="font-weight: bold;">Total:</td>
-
-                                        <td class="text-right " style="font-weight: bold;text-align: end;">{{
-                                            invoice.grandtotal|floatformat:1}}</td>
-                                    </tr>
-
-                                </table>
-                            </div>
+                            </table>
                         </div>
-
-
                     </div>
 
+
                 </div>
+
+            </div>
         </div>
     </div>
 </div>
@@ -579,6 +599,97 @@
 
 </script>
 <script>
+    function sortTable(columnIndex) {
+        let sortAscending = false
+        const table = document.getElementById("myTable");
+        const rows = Array.from(table.rows).slice(0); // Exclude the header row
+
+        rows.sort((row1, row2) => {
+            const cellValue1 = row1.cells[columnIndex].textContent.toLowerCase();
+            const cellValue2 = row2.cells[columnIndex].textContent.toLowerCase();
+
+            if (cellValue1 < cellValue2) {
+                return -1;
+            } else if (cellValue1 > cellValue2) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
+
+        // Clear the table body
+        while (table.rows.length > 1) {
+            table.deleteRow(1);
+        }
+
+        // Append the sorted rows back to the table
+        rows.forEach(row => table.appendChild(row));
+        sortAscending = !sortAscending;
+    }
+
+    function rsortTable(columnIndex) {
+        let sortAscending = false
+        const table = document.getElementById("myTable");
+        const rows = Array.from(table.rows).slice(0); // Exclude the header row
+
+        rows.sort((row1, row2) => {
+            const cellValue1 = row1.cells[columnIndex].textContent.toLowerCase();
+            const cellValue2 = row2.cells[columnIndex].textContent.toLowerCase();
+
+            if (sortAscending) {
+                if (cellValue1 < cellValue2) {
+                    return -1;
+                } else if (cellValue1 > cellValue2) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            } else {
+                if (cellValue1 > cellValue2) {
+                    return -1;
+                } else if (cellValue1 < cellValue2) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        });
+
+        // Clear the table body
+        while (table.rows.length > 1) {
+            table.deleteRow(1);
+        }
+
+        // Append the sorted rows back to the table
+        rows.forEach(row => table.appendChild(row));
+
+        // Toggle the sorting order for the next click
+        sortAscending = !sortAscending;
+    }
+    function searchFunction() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("search");
+        filter = input.value.toLowerCase();
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr");
+        // input.style.borderColor = "green";
+        for (i = 0; i < tr.length; i++) {
+            let rowVisible = false;
+            td = tr[i].getElementsByTagName("td");
+            for (j = 0; j < td.length; j++) {
+                if (td[j]) {
+                    txtValue = td[j].textContent || td[j].innerText;
+                    if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                        rowVisible = true;
+                        break;
+                    }
+                }
+            }
+
+            // Show/hide the row based on the search results
+            tr[i].style.display = rowVisible ? "" : "none";
+        }
+    }
     // ... Your existing JavaScript code ...
 
     jQuery(document).ready(function ($) {

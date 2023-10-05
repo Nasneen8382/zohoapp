@@ -222,6 +222,7 @@
                     <th>Task name</th>
                     <th class="text-right">Description</th>
                     <th class="text-right">Rate per hour</th>
+                    <th></th>
                     <th class="text-center">Actions</th>
 
                 </tr>
@@ -237,13 +238,18 @@
                         <input type="text" class="form-control bg-light text-dark" id="desc1" name="taskdes"
                             value="{{v.taskdes}}">
                     </td>
+                    <td></td>
                     <td class="text-right">
                         <div class="input-group mb-2">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">INR</div>
                             </div>
-                            <input type="text" class="form-control bg-light text-dark" id="tsk1" name="taskrph"
-                                value="{{v.taskrph}}">
+
+                            {% if v.taskrph != '' %}
+                            <input type="text" class="form-control bg-light text-dark" id="tsk1" name="taskrph" value="{{v.taskrph}}">
+                                {% else %}
+                                <input type="text" class="form-control bg-light text-dark" id="tsk1" name="taskrph">
+                                {% endif %}
                         </div>
 
                     </td>

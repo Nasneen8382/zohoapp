@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<style>
+    .btn {
+        color: rgb(218, 164, 48);
+        outline-color: azure;
+        border: 2px solid rgb(25, 91, 145);
+    }
+
+    .btn:hover {
+        color: darkslategray;
+        background-color: lightblue;
+        outline: none;
+
+    }
+
+    a {
+        list-style: none;
+        color: azure;
+    }
+
+    a:hover {
+        color: rgb(218, 164, 48);
+    }
+
+    .searchbar {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+        /* padding: 1rem .8rem; */
+    }
+
+    .searchbar .left input[text] {
+
+        width: 15vw;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+        <div>
+            <center>
+                <h6>{{cmp1.cname}}</h6>
+                <h2 class="mt-4" id="headline">PROJECT SUMMARY</h2>
+                <div class="display">
+                    <div id="d1" style="display: inline-block;"></div>
+                    <div id="d2" style="display: inline-block;"></div>
+                </div>
+
+            </center>
+        </div>
+    </div>
+    <div class="searchbar pt-5 pb-4">
+        <div class="left" style="display: grid;grid-template-columns: 1fr 1fr;">
+            <div class="px-2">
+                <label style="text-align:left ">From</label><br>
+                <input name="FromDate" class="inputdate form-control" type="date" id="in1">
+            </div>
+            <div class="px-2">
+                <label style="text-align:left ">To</label><br>
+                <input name="ToDate" type="date" class="inputdate form-control" id="in2">
+            </div>
+        </div>
+        <div class="right">
+
+            <a class="btn text-center px-3" href="" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                role="button"><i class="fa fa-filter mx-3"></i>
+            </a>
+            <div class="dropdown-menu" id="filterMenu">
+                <a class="dropdown-item" href="#" style="color:rgb(218, 164, 48) ;" data-value="All">All</a>
+                <a class="dropdown-item" href="#" style="color:rgb(218, 164, 48) ;" data-value="Billed">Billed</a>
+                <a class="dropdown-item" href="#" style="color:rgb(218, 164, 48) ;" data-value="Not Billed">Not
+                    Billed</a>
+            </div>
+            <a class="btn btn-outline-primary" href="{% url 'proj' %}"><i class="fa fa-plus"></i>NEW</a>
+        </div>
+
+    </div>
+    <hr>
+    <div class="row  mx-2">
+        <input type="text" id="vendorSearchInput" class="form-control bg-light text-dark"
+        placeholder="Search Projects..." style="width: 20vw;">
+    </div>
+   
+
+
+    <table class="table text-white" id="mytable">
+        <thead>
+            <tr>
+                <th>PROJECT NAME</th>
+                <th>CUSTOMER NAME</th>
+                <th>USER EMAIL</th>
+                <th>Date</th>
+                <th>TASK NAME</th>
+                <th>ACTION</th>
+                <th></th>
+                <th>BILL DATE</th>
+                <th>AMOUNT</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for v in taskz %}
+            <tr id="over">
+                <td>{{v.proj.name}}</td>
+                <td> {{v.proj.c_name.customerName}} </td>
+                <td>{{v.username}}</td>
+                <td>{{v.proj.start}}</td>
+                <td>{{v.taskname}}</td>
+                <td>{{v.billable}}
+                <td>
+                <td>{% if v.billable == 'Billed' %}{{v.billdate}}{% endif %}</td>
+                <td>{{v.taskrph}}</td>
+
+                
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+
+
+
+
+</div>
+
+
+
+{% endblock %}

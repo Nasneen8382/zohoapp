@@ -172,7 +172,7 @@
               <option value="{{d.id}}" data-email="{{ d.customerEmail }}">{{d.customerName}}</option>
               {% endfor %}
             </select>
-            <button type="button" class="btn btn-sm text-white" style="background-color: rgb(210, 132, 30);"
+            <button type="button" class="btn btn-sm text-white m-1" style="background-color: rgb(210, 132, 30);font-size: 1.7rem;"
               id="create-cus">+</button><br><br><br>
 
           </div>
@@ -317,12 +317,12 @@
             </tr>
           </tbody>
         </table>
-        <button type="button" class="btn btn-sm text-white" style="background-color: rgb(210, 132, 30);"
-          id="add-user-row">Add User</button>
+        <!-- <button type="button" class="btn btn-sm text-white" style="background-color: rgb(210, 132, 30);"
+          id="add-user-row">Add User</button> -->
         <button type="button" class="btn btn-sm text-white" style="background-color: rgb(210, 132, 30);"
           id="create-user">Create User</button><br><br><br>
         <label for="">Tasks</label><br>
-        <table class="table text-black" id="task_table">
+        <table class="table text-black my-2" id="task_table">
           <thead>
             <tr>
               <th>Task name</th>
@@ -366,8 +366,8 @@
             </tr>
           </tbody>
         </table>
-        <button type="button" class="btn btn-sm text-white" style="background-color: rgb(210, 132, 30);"
-          id="add-task-row">Add Task</button><br><br>
+        <!-- <button type="button" class="btn btn-sm text-white" style="background-color: rgb(210, 132, 30);"
+          id="add-task-row">Add Task</button><br><br> -->
         <script>
           $(document).ready(function () {
             $("#billable1").change(function () {

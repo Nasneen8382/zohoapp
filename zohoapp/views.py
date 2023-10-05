@@ -7704,6 +7704,7 @@ def editprojdb(request,id):
             tsk.billdate= request.POST.get('billdate')
         else:
             tsk.billable = 'Not Billed'
+            tsk.billdate = None
         print("saved")
         tsk.save()
 
@@ -15190,3 +15191,16 @@ def delete_projectcomment(request,cid):
         return redirect('overview', p.id)
 
         
+def project_summary(request):
+    company = company_details.objects.get(user=request.user)
+    project = project1.objects.all()
+    taskz=task.objects.all()
+    for t in taskz:
+        usern=usernamez.objects.get(projn=t.proj)
+        emp= Payroll.objects.get(id=usern.usernamez)
+        fname= emp.first_name
+        lname = emp.last_name
+        t.username = fname+ " "+lname
+        
+    return render(request,'project_summary.html',{'company':company,'taskz':taskz})
+    
