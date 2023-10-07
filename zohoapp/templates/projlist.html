@@ -86,14 +86,16 @@
       </div>
       <div class="searchbar pt-5 pb-4">
         <div class="left" style="display: grid;grid-template-columns: 1fr 1fr;">
-          <input type="text" id="vendorSearchInput" class="form-control bg-light text-dark" placeholder="Search Projects...">
+          <input type="text" id="search" class="form-control bg-light text-dark" placeholder="Search Projects..." onkeyup="searchFunction()">
           <a class="btn btn-outline-primary mx-2" href="" data-bs-toggle="dropdown" aria-haspopup="true"
           aria-expanded="false" role="button" style="width: 8vw;">
           <i class="fa fa-sort"></i> Sort
       </a>
       <div class="dropdown-menu ">
-          <a class="dropdown-item" href="javascript:sortTable(0)">Name A-Z</a>
-          <a class="dropdown-item" href="javascript:rsortTable(0)">Name Z-A</a>
+          <a class="dropdown-item" href="javascript:sortTable(0)">Project Name A-Z</a>
+          <a class="dropdown-item" href="javascript:rsortTable(0)">Project Name Z-A</a>
+          <a class="dropdown-item" href="javascript:sortTable(1)">Customer Name Z-A</a>
+          <a class="dropdown-item" href="javascript:rsortTable(1)">Customer Name Z-A</a>
       </div>
         </div>
         <div class="right">
@@ -201,6 +203,36 @@
                 }
             }
         }
+        function exportAsExcel() {
+        const table = document.getElementById('mytable'); // Replace 'myTable' with your table's ID
+        const wb = XLSX.utils.table_to_book(table);
+
+        XLSX.writeFile(wb, 'project summary.xlsx');
+    }
+    function searchFunction() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("search");
+        filter = input.value.toLowerCase();
+        table = document.getElementById("mytable");
+        tr = table.getElementsByTagName("tr");
+        // input.style.borderColor = "green";
+        for (i = 1; i < tr.length; i++) {
+            let rowVisible = false;
+            td = tr[i].getElementsByTagName("td");
+            for (j = 0; j < td.length; j++) {
+                if (td[j]) {
+                    txtValue = td[j].textContent || td[j].innerText;
+                    if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                        rowVisible = true;
+                        break;
+                    }
+                }
+            }
+
+            // Show/hide the row based on the search results
+            tr[i].style.display = rowVisible ? "" : "none";
+        }
+    }
 </script>
 <script>
   function sortTable(columnIndex) {

@@ -2,6 +2,7 @@
 {% block content %}
 {% load static %}
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
 
 <style>
     #over:hover {
@@ -111,20 +112,10 @@
 
             <input class="form-control text-dark" type="text" placeholder="Search Project" name="search" id="search"
                 onkeyup="searchFunction()">
-
-                <a class="btn btn-outline-warning mx-1" href="" data-bs-toggle="dropdown" aria-haspopup="true"
-                aria-expanded="false" role="button">
-                <i class="fa fa-sort"></i>
-            </a>
-            <div class="dropdown-menu ">
-                <a class="dropdown-item" href="javascript:sortTable(0)">Name A-Z</a>
-                <a class="dropdown-item" href="javascript:rsortTable(0)">Name Z-A</a>
-            </div>
-
             <a class="btn btn-outline-warning mx-1" href="" data-bs-toggle="dropdown" aria-haspopup="true"
                 aria-expanded="false" role="button">
                 <i class="fa fa-filter"></i>
-            </a>
+        </a>
             <div class="dropdown-menu ">
                 <a class="dropdown-item" href="javascript:sortTable(0)">Name A-Z</a>
                 <a class="dropdown-item" href="javascript:rsortTable(0)">Name Z-A</a>
@@ -183,8 +174,7 @@
                 <div class="right align-items-end" id="temp-btns" style="display: none;">
                     <a class="btn btn_pdf ml-1" href="" id="convertToPDFButton" data-toggle="tooltip" title="Pdf"><i
                             class="mdi mdi-file-pdf"></i></a>
-                    <a class="btn btn_print ml-1" href="" data-toggle="tooltip" title="Print"><i
-                            class="mdi mdi-printer"></i></a>
+                    <a class="btn btn_print ml-1" href="" data-toggle="tooltip" title="Print"><i class="mdi mdi-printer"></i></a>
                 </div>
             </div>
             <hr>

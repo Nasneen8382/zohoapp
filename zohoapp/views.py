@@ -15201,6 +15201,7 @@ def project_summary(request):
         fname= emp.first_name
         lname = emp.last_name
         t.username = fname+ " "+lname
+        t.useremail=usern.emailz
         
     return render(request,'project_summary.html',{'company':company,'taskz':taskz})
     
