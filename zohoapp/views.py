@@ -15016,8 +15016,21 @@ def delete_customer(request,id):
 
 def holidays(request):
     all_events = Events.objects.all()
+    event_counts = {}
+
+    for event in all_events:
+        month_year = event.start.strftime('%Y-%m')  # Format: 'YYYY-MM'
+    
+    # If the month_year is not in the dictionary, add it with a count of 1
+        if month_year not in event_counts:
+            event_counts[month_year] = 1
+        else:
+        # If the month_year is already in the dictionary, increment the count
+            event_counts[month_year] += 1
+    event_counts_json = json.dumps(event_counts)
     context = {
-        "events":all_events,
+        "events": all_events,
+        "event_counts_json": event_counts_json,
     }
     return render(request, 'holidays.html',context)
 
@@ -15027,45 +15040,35 @@ def all_events(request):
     for event in all_events:                                                                                             
         out.append({                                                                                                     
             'title': event.name,                                                                                         
-            'id': event.id,                                                                                              
+            # 'id': event.id,                                                                                              
             'start': event.start.date(),                                                         
             'end': event.end.date(), 
-            'backgroundColor': '#F00',
-            'textColor': 'white' ,
-            'className': 'event-full',
+            'rendering': 'background',
+            'color': 'red',
+            'allDay': 'true',
                                                                        
         })   
                                                                                                                       
     return JsonResponse(out, safe=False) 
  
-def add_event(request):
-    start = request.GET.get("start", None)
-    end = request.GET.get("end", None)
-    title = request.GET.get("title", None)
-    event = Events(name=str(title), start=start, end=end)
-    event.save()
-    data = {}
-    return JsonResponse(data)
+def add_holiday(request):
+    if request.method=='POST':
+        title = request.POST['title']
+        start = request.POST['start']
+        end = request.POST['end']
+    
+        event = Events(name=title, start=start, end=end)
+        event.save()
+        print("========================saved")
+        return redirect('holidays')
+    return redirect('holidays')
+    
  
-def update(request):
-    start = request.GET.get("start", None)
-    end = request.GET.get("end", None)
-    title = request.GET.get("title", None)
-    id = request.GET.get("id", None)
-    event = Events.objects.get(id=id)
-    event.start = start
-    event.end = end
-    event.name = title
-    event.save()
-    data = {}
-    return JsonResponse(data)
- 
-def remove(request):
-    id = request.GET.get("id", None)
-    event = Events.objects.get(id=id)
+
+def remove(request,id):
+    event = Events.objects.get(id=id)                                                                                    
     event.delete()
-    data = {}
-    return JsonResponse(data)
+    return redirect('holidays')
 
 
 def create_emp(request):

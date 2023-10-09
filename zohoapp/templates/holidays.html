@@ -7,8 +7,14 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.js"></script>
-
+<!-- <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script> -->
+<!-- <script src="path/to/jquery.min.js"></script> -->
+<script src="path/to/bootstrap.min.js"></script>
 <style>
+    .modal {
+        z-index: 9999;
+    }
+
     .addform {
         align-items: center;
         display: flex;
@@ -24,95 +30,247 @@
         background-color: rgb(255, 196, 0);
         color: black;
     }
-    .eventday{
-        background-color: blue;
-    }
+
+    /* .fc .fc-content {
+    padding-bottom: 2px;
+    } */
     .fc-ltr .fc-basic-view .fc-day-top .fc-day-number {
-    float: right;
-    font-size: .5rem;
-    color: white;
-}
-.fc-unthemed td.fc-today {
-    background: #caac57;
-}   /* .fc table .fc-row{
+        float: right;
+        font-size: 1.5rem;
+        color: white;
+    }
+
+    .fc-unthemed td.fc-today {
+        background: #caac57;
+    }
+
+    /* .fc table .fc-row{
        color: red;
     } */
+    #exTab2 .nav .active {
+        border-bottom: 3px solid rgb(255, 255, 255);
+    }
+
+    #exTab2 .nav li a {
+        text-decoration: none;
+        color: white;
+    }
+
+    a {
+        text-decoration: none;
+        color: red;
+    }
 </style>
 <div class="container-fluid">
-    <div class="head text-light p-3">
+    <!-- <div class="head text-light p-3">
         <h4>CALENDAR</h4>
-    </div>
-    <div class="row">
+    </div> -->
+    <div class="card-body" id="exTab2">
 
-        <div class="card col-8" style="background-color: black;color: white;padding: 3rem;">
-            <div id="calendar"></div>
+        <ul class="nav nav-tabs row">
+            <li class="active col-6 text-center" id="list1"><a id="id1" class="btn">CALENDAR</a></li>
+            <li class="col-6 text-center" id="list2"><a id="id2" class="btn">HOLIDAYS</a>
+            </li>
+        </ul>
 
-        </div>
-        <div class="card col-4" style="background-color: rgba(0, 0, 0, 0.603);">
-            <h4 class="pt-3">Add holiday</h4>
-            <hr>
-            <div class="addform " style="justify-content: space-between;">
-                <input class="form-control text-dark" type="date">
-                <button class="btn btn-warning mx-1" style="font-size: 1.2rem;"> Add</button>
+
+        <div class="tab-content" style="border: none;padding: 0px;">
+            <div class="tab-pane active" id="1" data-title="Sale">
+                <div class="row">
+
+                    <div class="col-8" style="background-color: black;color: white;padding: 3rem;">
+                        <div id="calendar"></div>
+
+                    </div>
+                    <div class="col-4" style="background-color: rgba(0, 0, 0, 0.603);">
+                        <h4 class="pt-3">Add holiday</h4>
+                        <hr>
+                        <div class="row mx-3">
+                            <!-- <input class="form-control text-dark" type="date"> -->
+                            <button class="btn btn-warning " style="font-size: 1.2rem;" data-toggle="modal"
+                                data-target="#commentModal"><i class="fa fa-plus" aria-hidden="true"></i> Add
+                                Holiday</button>
+                        </div>
+                        <p>{{event_counts}}</p>
+                        {% for i in event_counts %}
+                        <p>{{i}}</p>
+                        {% endfor %}
+                        <p id="currentmonthyear"></p>
+                        <p id="countForCurrentMonth"></p>
+
+                    </div>
+                </div>
+
             </div>
 
+            <!-- modal -->
+            <div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content" style="background-color: #3b3b3b;">
+                        <div class="modal-header">
+                            <h3 class="modal-title" id="exampleModalLabel">Add Comments</h3>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+
+                        <form action="{% url 'add_holiday' %}" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="modal-body mx-1">
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <label for=""> Title</label>
+                                        <input type="text" class="text-dark form-control" name="title">
+                                    </div>
+
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-6">
+                                        <label for="">Start Date</label>
+                                        <input type="date" class="text-dark form-control" name="start">
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="">End Date</label>
+                                        <input type="date" class="text-dark form-control" name="end">
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                                <button type="submit" class="btn btn-primary" id="save">Save</button>
+
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- modal end -->
+            <div class="tab-pane" id="2" style="display: none;">
+                <table class="table mt-3" style="background-color: rgba(0, 0, 0, 0.568);">
+                    {% for i in events %}
+                    <tr class="text-light mt-2 pt-1">
+                        <td>{{forloop.counter }}</td>
+                        <td>{{i.name}}</td>
+                        <td>{{i.start | date:"M. d, Y" }}</td>
+                        <td>{{i.end | date:"M. d, Y" }}</td>
+                        <td class="text-danger" style="font-size: 1.5rem;"><a href="{% url 'remove' i.id %}"><i
+                                    class="fa fa-times"></i></a></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
         </div>
     </div>
+
 
 </div>
 
+
+
 <script>
+    $(document).ready(function () {
+        $("#id1").click(function () {
+            $("#1").show();
+            $("#2").hide();//: 3px solid rgb(255, 255, 255);
+
+            $("#list1").css("border-bottom", "3px solid rgb(255, 255, 255)");
+            $("#list2").css("border-bottom", "none");
+            // $("#t-btn").css("background-color", "rgb(243, 188, 9)").css("color", "white");
+        });
+
+        $("#id2").click(function () {
+            $("#2").show();
+            $("#1").hide();//: 3px solid rgb(255, 255, 255);
+
+            $("#list2").css("border-bottom", "3px solid rgb(255, 255, 255)");
+            $("#list1").css("border-bottom", "none");
+        });
+    });
+    const monthNameToNumber = {
+        'January': 1,
+        'February': 2,
+        'March': 3,
+        'April': 4,
+        'May': 5,
+        'June': 6,
+        'July': 7,
+        'August': 8,
+        'September': 9,
+        'October': 10,
+        'November': 11,
+        'December': 12
+    };
+    const monthYearCounts = '{{event_counts}}';
+    let my;
+
     const currentDate = new Date();
     $('#calendar').fullCalendar({
         header: {
-            left: 'prev,next today',
+            left: 'prev,next ',
             center: 'title',
-            right: 'month,agendaWeek,agendaDay'
+            right: 'today month,year'
         },
-
+        // initialView: 'dayGridMonth',
         defaultDate: currentDate,
-        navLinks: true,
+        // navLinks: true,
         eventLimit: true,
-        events: [{
-            title: 'Front-End Conference',
-            start: '2018-11-16',
-            end: '2018-11-18'
-        },
-        {
-            title: 'Hair stylist with Mike',
-            start: '2023-10-20',
-            // allDay: true,
-            // backgroundColor: 'red'
-            class:'eventday'
-        },
-        {
-            title: 'Car mechanic',
-            start: '2018-11-14T09:00:00',
-            end: '2018-11-14T11:00:00'
-        },
-        {
-            title: 'Dinner with Mike',
-            start: '2018-11-21T19:00:00',
-            end: '2018-11-21T22:00:00'
-        },
-        {
-            title: 'Chillout',
-            start: '2018-11-15',
-            allDay: true
-        },
-        {
-            title: 'Vacation',
-            start: '2018-11-23',
-            end: '2018-11-29'
-        },
-        ],
-        eventRender: function (event, element) {
-            // Customize the event's appearance based on your conditions
-            if (event.title === 'Front-End Conference') {
-                element.css('background-color', 'blue'); // Change background color to blue
+
+        events: '/all_events',
+
+
+        eventColor: '#378006',
+        eventDisplay: 'list-item',
+
+        viewRender: function (view, element) {
+            var displayedTitle = view.title;
+
+            // Update the content of a <div> with the current title
+            var parts = displayedTitle.split(' '); // Split into ['Month', 'Year']
+            console.log(parts[0]);
+            var year = parts[1]
+            var monthNumber = monthNameToNumber[parts[0]];
+            var formattedMonth = ('0' + monthNumber).slice(-2);
+
+            // Create the "yyyy-mm" format
+            var monthYear = year + '-' + formattedMonth;
+
+            // Update the content of a <div> with the current month and year in yyyy-mm format
+            $('#currentmonthyear').text(monthYear);
+            my = monthYear
+            for( i in monthYearCounts){
+                console.log(i);
+            }
+            console.log(monthYearCounts);
+            console.log("==================================================");
+
+            // Check if the displayedTitle exists as a key in the dictionary
+            if (monthYearCounts.hasOwnProperty(monthYear)) {
+                // If it exists, get the corresponding value and display it
+                var count = monthYearCounts[monthYear];
+                $('#countForCurrentMonth').text("count" + count);
+            } 
+            else{
+                // If it doesn't exist, display a message indicating no count found
+                $('#countForCurrentMonth').text("count" + '0');
             }
         }
+
+
     });
+    getMonth();
+    function getMonth() {
+        var date = $("#calendar").fullCalendar.getDate();
+        var m = moment([moment().year(), month, 1]);
+
+        // $('#calendar').fullCalendar('gotoDate', m );
+        // $('#currentmonthyear').text(m);
+    }
 
 </script>
 

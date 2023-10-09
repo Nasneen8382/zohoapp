@@ -724,8 +724,8 @@ urlpatterns = [
     path('holidays',views.holidays,name='holidays'),
 
     path('all_events/', views.all_events, name='all_events'), 
-    path('add_event/', views.add_event, name='add_event'), 
-    path('update/', views.update, name='update'),
+    path('add_holiday/', views.add_holiday, name='add_holiday'), 
+    path('remove/<int:id>', views.remove, name='remove'),
 
     path('create_emp', views.create_emp, name='create_emp'),
     path('getemployee', views.getemployee, name='getemployee'),
