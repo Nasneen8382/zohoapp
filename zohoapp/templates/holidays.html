@@ -91,7 +91,8 @@
                                 data-target="#commentModal"><i class="fa fa-plus" aria-hidden="true"></i> Add
                                 Holiday</button>
                         </div>
-                        <p>{{event_counts}}</p>
+                        <div id="eventCounts" data-event-counts="{{ event_counts_json }}"></div>
+                        <p>{{event_counts_json}}</p>
                         {% for i in event_counts %}
                         <p>{{i}}</p>
                         {% endfor %}
@@ -192,6 +193,14 @@
             $("#list1").css("border-bottom", "none");
         });
     });
+//     $(document).ready(function () {
+//     var eventCountsData = $('#eventCounts').data('event-counts');
+//     var eventCounts = JSON.parse(eventCountsData);
+//     console.log("kjhkkkkkkkkkkkkkkkkkkkkkk"+ eventCountsd);
+
+//     // Now, you can work with the eventCounts dictionary in JavaScript
+//     console.log(eventCounts);
+// });
     const monthNameToNumber = {
         'January': 1,
         'February': 2,
@@ -206,7 +215,8 @@
         'November': 11,
         'December': 12
     };
-    const monthYearCounts = '{{event_counts}}';
+    const monthYearCounts = '{{event_counts_json}}';
+    
     let my;
 
     const currentDate = new Date();
