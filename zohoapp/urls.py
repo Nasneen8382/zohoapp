@@ -734,6 +734,8 @@ urlpatterns = [
     path('delete_projectcomment/<int:cid>', views.delete_projectcomment, name='delete_projectcomment'),
     path('project_summary', views.project_summary, name='project_summary'),
 
+    path('projfile_download/<int:aid>', views.projfile_download, name='projfile_download'),
+    path('projdeletefile/<int:aid>', views.projdeletefile, name='projdeletefile'),
     
     re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT})
     

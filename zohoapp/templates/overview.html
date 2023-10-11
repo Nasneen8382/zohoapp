@@ -100,6 +100,9 @@
     .card .bold {
         font-size: 1rem;
     }
+    .right .dropdown-menu {
+        width: 30vw;
+    }
 </style>
 
 
@@ -163,10 +166,37 @@
                             class="fas fa-trash"></i></a>
                     <a class="btn" href="" data-toggle="modal" data-target="#commentModal" data-toggle="tooltip"
                         title="comment"><i class="far fa-comment"></i></a>
-                    <label for="file-input" class="btn ml-1 border-0" data-toggle="tooltip" title="Upload Attachments">
+                    <!-- <label for="file-input" class="btn ml-1 border-0" data-toggle="tooltip" title="Upload Attachments">
                         <i class="fas fa-paperclip"></i>
                     </label>
-                    <input id="file-input" type="file" name="file" style="display:none;" onchange="uploadFile()">
+                    <input id="file-input" type="file" name="file" style="display:none;" onchange="uploadFile()"> -->
+                    <a class="btn ml-1" href="" id="dd1" data-bs-toggle="dropdown" aria-haspopup="true"
+                            data-toggle="tooltip" title="Download Attachments" aria-expanded="false" role="button">
+                            <i class="fas fa-paperclip"></i>
+                        </a>
+                        <div class="dropdown-menu">
+                            {% if attach %}
+                            <table class="table table-borderless">
+                                {% for a in attach %}
+                                <tr>
+                                    <td>{{forloop.counter}}.</td>
+                                    <td><a href="{% url 'projfile_download' a.id %}">{{a.attachment.name}}</a></td>
+                                    <td><a href="{% url 'projdeletefile' a.id %}"><i class="fas fa-trash"></i></a></td>
+                                </tr>
+                                {% endfor %}
+                                
+                            </table>
+                            {% else %}
+                            <div class="text-center">No Attachment found</div>
+                            {% endif %}
+                            <div class="row mx-2">
+                                <label for="file-input" class="btn ml-1 border-0" >
+                                    Upload Files <i class="fas fa-upload"></i>
+                                </label>
+                                <input id="file-input" type="file" name="file" style="display:none;" onchange="uploadFile()">
+                            
+                            </div>
+                        </div>
                 </div>
 
                 <div class="right align-items-end" id="temp-btns" style="display: none;">
@@ -359,6 +389,7 @@
                         </div> -->
                     <div class="row ">
                         <div class="col-md-6 pt-4">
+                            <h4 class="text-dark">{{company.company_name}}</h4>
                             <p class="text-dark">Customer :</p>
                             <h4 class="text-dark" style="text-transform: uppercase;font-weight: bold;">
                                 {{project.c_name.customerName}}</h4>
@@ -367,8 +398,8 @@
                             </h6>
                         </div>
                         <div class="col-md-6 text-right ">
-                            <h4 class="text-dark">{{company.company_name}}</h4>
-                            <h1 class="text-dark text-uppercase" style="font-size: 2.5rem; ">{{project.name}}</h1>
+                            
+                            <h1 class="text-dark text-uppercase mt-3" style="font-size: 2.5rem; ">{{project.name}}</h1>
                             <h6 class="text-dark" style="font-weight: bold;max-width: 15rem;word-wrap: break-word;">
                                 {{project.desc}}
                             </h6>

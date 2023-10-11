@@ -7511,7 +7511,7 @@ def vproj(request):
         for j in tsk:
             i.status= j.billable
             i.rate= j.taskrph
-    return render(request,'projlist.html',{'proj':proj,'tsk':tsk,'active':active,'company':company})
+    return render(request,'projlist.html',{'proj':proj,'active':active,'company':company})
     
     
 def addproj(request):
@@ -7598,6 +7598,8 @@ def overview(request,id):
     project = get_object_or_404(project1, id=id)
     taskz=task.objects.get(proj=project)
     usern=usernamez.objects.filter(projn=project)
+    attach=projectfiles.objects.filter(proj=project)
+    print(attach)
     for i in usern:
         emp= Payroll.objects.get(id=i.usernamez)
         fname= emp.first_name
@@ -7607,7 +7609,7 @@ def overview(request,id):
      # Save the project object with the updated comment
 
 
-    return render(request,'overview.html',{'proje':proje,'usern':usern,'taskz':taskz,'project':project,'company':company,'cmt':cmt})
+    return render(request,'overview.html',{'proje':proje,'usern':usern,'taskz':taskz,'project':project,'company':company,'cmt':cmt,'attach':attach})
 
 # def comment(request, product_id):
 #     if request.method == 'POST':
@@ -15015,6 +15017,7 @@ def delete_customer(request,id):
 
 
 def holidays(request):
+    company = company_details.objects.get(user=request.user)
     all_events = Events.objects.all()
     event_counts = {}
 
@@ -15028,9 +15031,11 @@ def holidays(request):
         # If the month_year is already in the dictionary, increment the count
             event_counts[month_year] += 1
     event_counts_json = json.dumps(event_counts)
+    
     context = {
         "events": all_events,
         "event_counts_json": event_counts_json,
+        "company":company
     }
     return render(request, 'holidays.html',context)
 
@@ -15208,3 +15213,16 @@ def project_summary(request):
         
     return render(request,'project_summary.html',{'company':company,'taskz':taskz})
     
+
+def projfile_download(request,aid):
+    att= projectfiles.objects.get(id=aid)
+    file = att.attachment
+    response = FileResponse(file)
+    response['Content-Disposition'] = f'attachment; filename="{file.name}"'
+    return response
+    
+def projdeletefile(request,aid):
+    att=projectfiles.objects.get(id=aid)
+    p=att.proj
+    att.delete()
+    return redirect('overview',p.id)

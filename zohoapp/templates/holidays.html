@@ -83,21 +83,23 @@
 
                     </div>
                     <div class="col-4" style="background-color: rgba(0, 0, 0, 0.603);">
-                        <h4 class="pt-3">Add holiday</h4>
-                        <hr>
-                        <div class="row mx-3">
+
+                        <div class="row mx-3 my-5">
                             <!-- <input class="form-control text-dark" type="date"> -->
                             <button class="btn btn-warning " style="font-size: 1.2rem;" data-toggle="modal"
                                 data-target="#commentModal"><i class="fa fa-plus" aria-hidden="true"></i> Add
                                 Holiday</button>
                         </div>
-                        <div id="eventCounts" data-event-counts="{{ event_counts_json }}"></div>
-                        <p>{{event_counts_json}}</p>
-                        {% for i in event_counts %}
-                        <p>{{i}}</p>
-                        {% endfor %}
-                        <p id="currentmonthyear"></p>
-                        <p id="countForCurrentMonth"></p>
+                        <div style="display: none;" id="eventCounts">{{event_counts_json}}</div>
+                        <hr>
+                        <div class="m-2 mt-2"><canvas id="myCanvas" width="15" height="15"
+                                style="background-color: rgb(150, 19, 19);"></canvas> &nbsp;&nbsp;&nbsp;Number of Holidays: <p class="d-inline-block"
+                                id="idd"></p>
+                        </div>
+                        <div class="m-2 mt-2"><canvas id="myCanvas" width="15" height="15"
+                            style="background-color: rgb(19, 150, 74);"></canvas> &nbsp;&nbsp;&nbsp;Number of Workingdays: <p class="d-inline-block"
+                            id="idd2"></p>
+                    </div>
 
                     </div>
                 </div>
@@ -176,6 +178,18 @@
 
 <script>
     $(document).ready(function () {
+        // var eventCountsJson =JSON.parse($('#eventCounts').text());
+
+        // for (var key in eventCountsJson) {
+        //     if (eventCountsJson.hasOwnProperty(key)) {
+        //         $('#idd').text( key);
+        //         var value = eventCountsJson[key];
+        //         console.log('Key: ' + key);
+        //         console.log('Value: ' + value);
+        //     }
+        // }
+
+
         $("#id1").click(function () {
             $("#1").show();
             $("#2").hide();//: 3px solid rgb(255, 255, 255);
@@ -193,14 +207,14 @@
             $("#list1").css("border-bottom", "none");
         });
     });
-//     $(document).ready(function () {
-//     var eventCountsData = $('#eventCounts').data('event-counts');
-//     var eventCounts = JSON.parse(eventCountsData);
-//     console.log("kjhkkkkkkkkkkkkkkkkkkkkkk"+ eventCountsd);
+    //     $(document).ready(function () {
+    //     var eventCountsData = $('#eventCounts').data('event-counts');
+    //     var eventCounts = JSON.parse(eventCountsData);
+    //     console.log("kjhkkkkkkkkkkkkkkkkkkkkkk"+ eventCountsd);
 
-//     // Now, you can work with the eventCounts dictionary in JavaScript
-//     console.log(eventCounts);
-// });
+    //     // Now, you can work with the eventCounts dictionary in JavaScript
+    //     console.log(eventCounts);
+    // });
     const monthNameToNumber = {
         'January': 1,
         'February': 2,
@@ -215,9 +229,8 @@
         'November': 11,
         'December': 12
     };
-    const monthYearCounts = '{{event_counts_json}}';
-    
-    let my;
+    // var monthYearCounts = '{{event_counts_json}}';
+    var monthYearCounts = JSON.parse($('#eventCounts').text());
 
     const currentDate = new Date();
     $('#calendar').fullCalendar({
@@ -246,42 +259,31 @@
             var year = parts[1]
             var monthNumber = monthNameToNumber[parts[0]];
             var formattedMonth = ('0' + monthNumber).slice(-2);
-
-            // Create the "yyyy-mm" format
+            var tot = new Date(year, monthNumber, 0).getDate();
+            
             var monthYear = year + '-' + formattedMonth;
 
-            // Update the content of a <div> with the current month and year in yyyy-mm format
             $('#currentmonthyear').text(monthYear);
-            my = monthYear
-            for( i in monthYearCounts){
-                console.log(i);
-            }
-            console.log(monthYearCounts);
-            console.log("==================================================");
-
             // Check if the displayedTitle exists as a key in the dictionary
             if (monthYearCounts.hasOwnProperty(monthYear)) {
                 // If it exists, get the corresponding value and display it
                 var count = monthYearCounts[monthYear];
-                $('#countForCurrentMonth').text("count" + count);
-            } 
-            else{
+                var wrk =tot-count
+                $('#idd2').text(wrk);
+                $('#idd').text(count);
+
+                
+            }
+            else {
                 // If it doesn't exist, display a message indicating no count found
-                $('#countForCurrentMonth').text("count" + '0');
+                $('#idd').text('0');
+                $('#idd2').text(tot);
+
             }
         }
 
 
     });
-    getMonth();
-    function getMonth() {
-        var date = $("#calendar").fullCalendar.getDate();
-        var m = moment([moment().year(), month, 1]);
-
-        // $('#calendar').fullCalendar('gotoDate', m );
-        // $('#currentmonthyear').text(m);
-    }
-
 </script>
 
 
