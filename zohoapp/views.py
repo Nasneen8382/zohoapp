@@ -31,6 +31,7 @@ from itertools import groupby
 from django.core import serializers
 from django.shortcuts import get_object_or_404, redirect
 
+import calendar
 
 def index(request):
 
@@ -7484,14 +7485,14 @@ def download_chart_of_account(request,pk):
 def proj(request):
     user_id=request.user.id
     udata=User.objects.get(id=user_id)
-    data=customer.objects.all()
+    data=customer.objects.filter(user=request.user)
     print("Hello")
     print(data)
     u=User.objects.all()
     tasks=task.objects.all()
     uz=usernamez.objects.all()
     uc=usercreate.objects.all()
-    emp=Payroll.objects.all()
+    emp=Payroll.objects.filter()
     company=company_details.objects.get(user=request.user)
     return render(request,'proj.html',{'data':data,'u':u,'tasks':tasks,'uz':uz,'uc':uc,'company':company,'emp':emp})
     
@@ -7593,6 +7594,10 @@ def addproj(request):
 def overview(request,id):
    
     proje=project1.objects.filter(user=request.user)
+    for p in proje:
+        tsk=task.objects.get(proj=p)
+        p.billable = tsk.billable
+    
    
     company=company_details.objects.get(user=request.user)
     project = get_object_or_404(project1, id=id)
@@ -7609,7 +7614,7 @@ def overview(request,id):
      # Save the project object with the updated comment
 
 
-    return render(request,'overview.html',{'proje':proje,'usern':usern,'taskz':taskz,'project':project,'company':company,'cmt':cmt,'attach':attach})
+    return render(request,'overview.html',{'usern':usern,'taskz':taskz,'proje':proje,'project':project,'company':company,'cmt':cmt,'attach':attach})
 
 # def comment(request, product_id):
 #     if request.method == 'POST':
@@ -15014,13 +15019,62 @@ def delete_customer(request,id):
 
 # =========================================
 # nasneen
-
-
-def holidays(request):
+def holiday_list(request):
     company = company_details.objects.get(user=request.user)
     all_events = Events.objects.all()
     event_counts = {}
+    formatted_event_counts = {}
 
+    for event in all_events:
+        month_year = event.start.strftime('%Y-%m')  # Format: 'YYYY-MM'
+    
+    # If the month_year is not in the dictionary, add it with a count of 1
+        if month_year not in event_counts:
+            event_counts[month_year] = 1
+        else:
+        # If the month_year is already in the dictionary, increment the count
+            event_counts[month_year] += 1
+    for key, value in event_counts.items():
+        year, month = key.split('-')
+        month_name = calendar.month_name[int(month)]
+        formatted_month_year = f"{month_name} {year}"
+        formatted_event_counts[formatted_month_year] = value   
+    context = {
+        "events": all_events,
+        "event_counts_json": formatted_event_counts,
+        "company":company
+    }
+    return render(request, 'holiday_list.html',context)
+
+
+def holidays(request,date):
+    company = company_details.objects.get(user=request.user)
+    all_events = Events.objects.all()
+    event_counts = {}
+    event_dict = {}
+
+    month_name, year = date.split()
+
+    # Create a datetime object for the start of the specified month
+    month_number = list(calendar.month_abbr).index(month_name[:3])
+    start_date = datetime(year=int(year), month=month_number, day=1)
+    if month_number == 12:
+        end_date = start_date.replace(month=1, year=start_date.year + 1)
+    else:
+        end_date = start_date.replace(month=month_number + 1)
+    end_date -= timedelta(days=1)  
+
+
+    events = Events.objects.filter(start__gte=start_date, start__lt=end_date)
+
+    # Create a dictionary to store the events by day
+    
+    for event in events:
+        day = event.start.day
+        if day in event_dict:
+            event_dict[day].append(event.name)
+        else:
+            event_dict[day] = [event.name]
     for event in all_events:
         month_year = event.start.strftime('%Y-%m')  # Format: 'YYYY-MM'
     
@@ -15035,7 +15089,9 @@ def holidays(request):
     context = {
         "events": all_events,
         "event_counts_json": event_counts_json,
-        "company":company
+        "company":company,
+        "default":date,
+        "event_dict":event_dict,
     }
     return render(request, 'holidays.html',context)
 
@@ -15048,7 +15104,7 @@ def all_events(request):
             # 'id': event.id,                                                                                              
             'start': event.start.date(),                                                         
             'end': event.end.date(), 
-            'rendering': 'background',
+            # 'rendering': 'background',
             'color': 'red',
             'allDay': 'true',
                                                                        
@@ -15065,15 +15121,15 @@ def add_holiday(request):
         event = Events(name=title, start=start, end=end)
         event.save()
         print("========================saved")
-        return redirect('holidays')
-    return redirect('holidays')
+        return redirect('holiday_list')
+    return redirect('holiday_list')
     
  
 
 def remove(request,id):
     event = Events.objects.get(id=id)                                                                                    
     event.delete()
-    return redirect('holidays')
+    return redirect('holiday_list')
 
 
 def create_emp(request):
@@ -15226,3 +15282,13 @@ def projdeletefile(request,aid):
     p=att.proj
     att.delete()
     return redirect('overview',p.id)
+
+
+def project_active(request,id):
+    p=project1.objects.get(id=id)
+    if p.mode == 'Active':
+        p.mode = 'Inactive'
+    else:
+        p.mode = 'Active'
+    p.save()
+    return redirect('overview',id=id)

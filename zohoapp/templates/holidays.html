@@ -10,6 +10,7 @@
 <!-- <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script> -->
 <!-- <script src="path/to/jquery.min.js"></script> -->
 <script src="path/to/bootstrap.min.js"></script>
+
 <style>
     .modal {
         z-index: 9999;
@@ -36,7 +37,7 @@
     } */
     .fc-ltr .fc-basic-view .fc-day-top .fc-day-number {
         float: right;
-        font-size: 1.5rem;
+        font-size: 0.5rem;
         color: white;
     }
 
@@ -60,11 +61,17 @@
         text-decoration: none;
         color: red;
     }
+
+    #calendar {
+        height: 700px;
+        width: 700px;
+    }
 </style>
 <div class="container-fluid">
     <!-- <div class="head text-light p-3">
         <h4>CALENDAR</h4>
     </div> -->
+
     <div class="card-body" id="exTab2">
 
         <ul class="nav nav-tabs row">
@@ -78,28 +85,39 @@
             <div class="tab-pane active" id="1" data-title="Sale">
                 <div class="row">
 
-                    <div class="col-8" style="background-color: black;color: white;padding: 3rem;">
+                    <div class="col-9" style="background-color: black;color: white;padding: 10px;">
                         <div id="calendar"></div>
 
+
                     </div>
-                    <div class="col-4" style="background-color: rgba(0, 0, 0, 0.603);">
+                    <div class="col-3" style="background-color: rgba(0, 0, 0, 0.603);">
 
                         <div class="row mx-3 my-5">
-                            <!-- <input class="form-control text-dark" type="date"> -->
                             <button class="btn btn-warning " style="font-size: 1.2rem;" data-toggle="modal"
                                 data-target="#commentModal"><i class="fa fa-plus" aria-hidden="true"></i> Add
                                 Holiday</button>
                         </div>
                         <div style="display: none;" id="eventCounts">{{event_counts_json}}</div>
-                        <hr>
-                        <div class="m-2 mt-2"><canvas id="myCanvas" width="15" height="15"
-                                style="background-color: rgb(150, 19, 19);"></canvas> &nbsp;&nbsp;&nbsp;Number of Holidays: <p class="d-inline-block"
-                                id="idd"></p>
+
+                        <div class="mx-2 mb-0">Holidays: <p class="d-inline-block" id="idd"></p>
                         </div>
-                        <div class="m-2 mt-2"><canvas id="myCanvas" width="15" height="15"
-                            style="background-color: rgb(19, 150, 74);"></canvas> &nbsp;&nbsp;&nbsp;Number of Workingdays: <p class="d-inline-block"
-                            id="idd2"></p>
-                    </div>
+                        <hr>
+                        <div class="mx-3">
+                            {% for key, value in event_dict.items %}
+                            <div class="mt-4">
+                                <div class="text-center d-inline-block"
+                                    style="background-color: rgb(150, 19, 19);color: white; width: 25px;height: 25px;">
+                                    {{ key }}</div>
+                                &nbsp;&nbsp;{{ value|join:", " }}
+                            </div>
+                            <!-- <p>{{ key }} {{ value|join:", " }}</p> -->
+                            {% endfor %}
+                        </div>
+                        <hr>
+                        <div class="m-2 mt-5"><canvas id="myCanvas" width="15" height="15"
+                                style="background-color: rgb(19, 150, 74);"></canvas>&nbsp;Workingdays: <p
+                                class="d-inline-block" id="idd2"></p>
+                        </div>
 
                     </div>
                 </div>
@@ -112,7 +130,7 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content" style="background-color: #3b3b3b;">
                         <div class="modal-header">
-                            <h3 class="modal-title" id="exampleModalLabel">Add Comments</h3>
+                            <h3 class="modal-title" id="exampleModalLabel">Add Holidays</h3>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -154,7 +172,7 @@
             </div>
 
             <!-- modal end -->
-            <div class="tab-pane" id="2" style="display: none;">
+            <div class="row" id="2" style="display: none;">
                 <table class="table mt-3" style="background-color: rgba(0, 0, 0, 0.568);">
                     {% for i in events %}
                     <tr class="text-light mt-2 pt-1">
@@ -167,6 +185,7 @@
                     </tr>
                     {% endfor %}
                 </table>
+
             </div>
         </div>
     </div>
@@ -207,14 +226,7 @@
             $("#list1").css("border-bottom", "none");
         });
     });
-    //     $(document).ready(function () {
-    //     var eventCountsData = $('#eventCounts').data('event-counts');
-    //     var eventCounts = JSON.parse(eventCountsData);
-    //     console.log("kjhkkkkkkkkkkkkkkkkkkkkkk"+ eventCountsd);
-
-    //     // Now, you can work with the eventCounts dictionary in JavaScript
-    //     console.log(eventCounts);
-    // });
+    // 
     const monthNameToNumber = {
         'January': 1,
         'February': 2,
@@ -231,23 +243,23 @@
     };
     // var monthYearCounts = '{{event_counts_json}}';
     var monthYearCounts = JSON.parse($('#eventCounts').text());
-
-    const currentDate = new Date();
+    var defaultDate = "{{ default }}";
+    // const currentDate = new Date();
     $('#calendar').fullCalendar({
         header: {
-            left: 'prev,next ',
-            center: 'title',
-            right: 'today month,year'
+            left: 'title',
+
+            right: 'today '
         },
-        // initialView: 'dayGridMonth',
-        defaultDate: currentDate,
+        initialView: 'dayGridMonth',
+        defaultDate: defaultDate,
         // navLinks: true,
         eventLimit: true,
 
         events: '/all_events',
 
 
-        eventColor: '#378006',
+        // eventColor: '#378006',
         eventDisplay: 'list-item',
 
         viewRender: function (view, element) {
@@ -260,7 +272,7 @@
             var monthNumber = monthNameToNumber[parts[0]];
             var formattedMonth = ('0' + monthNumber).slice(-2);
             var tot = new Date(year, monthNumber, 0).getDate();
-            
+
             var monthYear = year + '-' + formattedMonth;
 
             $('#currentmonthyear').text(monthYear);
@@ -268,11 +280,11 @@
             if (monthYearCounts.hasOwnProperty(monthYear)) {
                 // If it exists, get the corresponding value and display it
                 var count = monthYearCounts[monthYear];
-                var wrk =tot-count
+                var wrk = tot - count
                 $('#idd2').text(wrk);
                 $('#idd').text(count);
 
-                
+
             }
             else {
                 // If it doesn't exist, display a message indicating no count found

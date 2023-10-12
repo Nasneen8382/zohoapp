@@ -732,6 +732,7 @@ class project1(models.Model):
     comment=models.CharField(max_length=255,null=True,blank=True)
     start=models.DateField(max_length=255,null=True,blank=True)
     end=models.DateField(max_length=255,null=True,blank=True)
+    mode=models.CharField(max_length=200,default='Active')
     
 class projectfiles(models.Model):
     attachment=models.FileField(upload_to='doc/',null=True)
@@ -741,6 +742,8 @@ class projectfiles(models.Model):
     
     
 class task(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
+
     proj=models.ForeignKey(project1,on_delete=models.CASCADE,null=True,blank=True)
     c_name=models.ForeignKey(customer,on_delete=models.CASCADE,null=True,blank=True)
     taskname=models.CharField(max_length=255,null=True,blank=True) 

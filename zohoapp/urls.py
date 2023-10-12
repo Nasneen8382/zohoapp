@@ -721,7 +721,7 @@ urlpatterns = [
     path('recuramt/<int:id>',views.recuramt,name='recuramt'),
     # ....................................................................................................
 
-    path('holidays',views.holidays,name='holidays'),
+    path('holidays/<str:date>',views.holidays,name='holidays'),
 
     path('all_events/', views.all_events, name='all_events'), 
     path('add_holiday/', views.add_holiday, name='add_holiday'), 
@@ -736,7 +736,10 @@ urlpatterns = [
 
     path('projfile_download/<int:aid>', views.projfile_download, name='projfile_download'),
     path('projdeletefile/<int:aid>', views.projdeletefile, name='projdeletefile'),
-    
+
+    path('project_active/<int:id>', views.project_active, name='project_active'),
+    path('holiday_list',views.holiday_list,name='holiday_list'),
+
     re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT})
     
     
