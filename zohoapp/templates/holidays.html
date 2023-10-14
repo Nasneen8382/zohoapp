@@ -66,6 +66,7 @@
         height: 700px;
         width: 700px;
     }
+
 </style>
 <div class="container-fluid">
     <!-- <div class="head text-light p-3">
@@ -73,6 +74,7 @@
     </div> -->
 
     <div class="card-body" id="exTab2">
+        <button id="close" type="button" onclick="history.go(-1);" class="btn btn-danger"><i class="fa fa-arrow-left" aria-hidden="true"></i></button>
 
         <ul class="nav nav-tabs row">
             <li class="active col-6 text-center" id="list1"><a id="id1" class="btn">CALENDAR</a></li>
@@ -174,7 +176,7 @@
             <!-- modal end -->
             <div class="row" id="2" style="display: none;">
                 <table class="table mt-3" style="background-color: rgba(0, 0, 0, 0.568);">
-                    {% for i in events %}
+                    {% for i in eve %}
                     <tr class="text-light mt-2 pt-1">
                         <td>{{forloop.counter }}</td>
                         <td>{{i.name}}</td>

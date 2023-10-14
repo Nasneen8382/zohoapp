@@ -12,14 +12,21 @@
 <div class="container-fluid">
     <div>
         <center>
+            
             <h6>{{company.company_name}}</h6>
             <h2 class="mt-4" id="headline">HOLIDAYS</h2>
-            
+            <div class="display">
+                
+            </div>
 
         </center>
     </div>
     <div  style="justify-content: space-between;display: flex;align-items: center;">
-        <div></div>
+    
+        <div> 
+            <input type="text" id="search" class="form-control bg-light text-dark" name="search"
+                placeholder="Search Here..." style="width: 20vw;"  onkeyup="searchFunction()">
+        </div>
         <div>
             <button class="btn btn-warning " style="font-size: 1rem; width: 12rem;" data-toggle="modal"
             data-target="#commentModal"><i class="fa fa-plus" aria-hidden="true"></i> Add
@@ -27,7 +34,33 @@
         </div>
         
     </div>
-    <table class="table mt-3" style="background-color: rgba(0, 0, 0, 0.568);">
+    <script>
+       function searchFunction() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("search");
+        filter = input.value.toLowerCase();
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr");
+        // input.style.borderColor = "green";
+        for (i = 1; i < tr.length; i++) {
+            let rowVisible = false;
+            td = tr[i].getElementsByTagName("td");
+            for (j = 0; j < td.length; j++) {
+                if (td[j]) {
+                    txtValue = td[j].textContent || td[j].innerText;
+                    if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                        rowVisible = true;
+                        break;
+                    }
+                }
+            }
+
+            // Show/hide the row based on the search results
+            tr[i].style.display = rowVisible ? "" : "none";
+        }
+    }
+    </script>
+    <table class="table mt-3" style="background-color: rgba(0, 0, 0, 0.568);" id="myTable">
         <thead>
             <th class="text-center">Sl no.</th>
             <th class="text-center">Month</th>
@@ -178,6 +211,7 @@ $('#mnth').text();
 
 
     });
+   
 </script>
 
 

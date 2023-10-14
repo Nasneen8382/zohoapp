@@ -2410,7 +2410,7 @@ def customerdata(request):
     customer_id = request.GET.get('id')
     print(customer_id)
     cust = customer.objects.get(id=customer_id)
-    data7 = {'email': cust.customerEmail}
+    data7 = {'email': cust.customerEmail,'gst':cust.GSTTreatment,'gstin':cust.GSTIN}
     
     print(data7)
     return JsonResponse(data7)
@@ -7656,8 +7656,8 @@ def commentdb(request, pk):
 
 def editproj(request,id):
     proj=project1.objects.get(id=id)
-    proje=project1.objects.all()
-    data=customer.objects.all()
+    proje=project1.objects.filter(user=request.user)
+    data=customer.objects.filter(user=request.user)
     uc=usercreate.objects.all()
     usern=usernamez.objects.filter(projn=proj)
     taskz=task.objects.filter(proj=id)
@@ -15037,7 +15037,7 @@ def holiday_list(request):
     for key, value in event_counts.items():
         year, month = key.split('-')
         month_name = calendar.month_name[int(month)]
-        formatted_month_year = f"{month_name} {year}"
+        formatted_month_year = f"{month_name}-{year}"
         formatted_event_counts[formatted_month_year] = value   
     context = {
         "events": all_events,
@@ -15052,8 +15052,10 @@ def holidays(request,date):
     all_events = Events.objects.all()
     event_counts = {}
     event_dict = {}
-
-    month_name, year = date.split()
+    print(date)
+    month_name, year = date.split('-')
+    print(month_name)
+    print(year)
 
     # Create a datetime object for the start of the specified month
     month_number = list(calendar.month_abbr).index(month_name[:3])
@@ -15085,13 +15087,15 @@ def holidays(request,date):
         # If the month_year is already in the dictionary, increment the count
             event_counts[month_year] += 1
     event_counts_json = json.dumps(event_counts)
-    
+    print(date)
+    default = month_name+" "+year
     context = {
         "events": all_events,
         "event_counts_json": event_counts_json,
         "company":company,
-        "default":date,
+        "default":default,
         "event_dict":event_dict,
+        "eve":events,
     }
     return render(request, 'holidays.html',context)
 
@@ -15257,7 +15261,7 @@ def delete_projectcomment(request,cid):
         
 def project_summary(request):
     company = company_details.objects.get(user=request.user)
-    project = project1.objects.all()
+    project = project1.objects.filter(user=request.user)
     taskz=task.objects.all()
     for t in taskz:
         usern=usernamez.objects.get(projn=t.proj)
@@ -15292,3 +15296,121 @@ def project_active(request,id):
         p.mode = 'Active'
     p.save()
     return redirect('overview',id=id)
+
+
+
+    
+    
+def projentr_custmrA(request):
+    if request.user.is_authenticated:
+        if request.method=='POST':
+            cr_data=customer()
+            print('hii')
+            print(cr_data)
+            type=request.POST.get('type')
+            fName=request.POST.get('fName')
+            lName=request.POST.get('lName')
+            txtFullName=request.POST.get('txtFullName')
+            cpname=request.POST.get('cpname')           
+            email=request.POST.get('email')
+            wphone=request.POST.get('wphone')
+            mobile=request.POST.get('mobile')
+            skname=request.POST.get('skname')
+            desg=request.POST.get('desg')      
+            dept=request.POST.get('dept')
+            wbsite=request.POST.get('wbsite')
+
+            gstt=request.POST.get('v_gsttype')
+            
+            x=request.POST.get('v_gsttype')
+            if x=="Unregistered Business-not Registered under GST":
+                pan=request.POST.get('pan_number')
+                gstin="null"
+            else:
+                gstin=request.POST.get('v_gstin')
+                pan=request.POST.get('pan_number')
+           
+            posply=request.POST.get('posply')
+            tax1=request.POST.get('tax1')
+            crncy=request.POST.get('crncy')
+
+            # select=request.POST.get('pterms')
+            
+            pterms=request.POST.get('pterms')
+
+            plst=request.POST.get('plst')
+            plang=request.POST.get('plang')
+            fbk=request.POST.get('fbk')
+            twtr=request.POST.get('twtr')
+        
+            atn=request.POST.get('atn')
+            ctry=request.POST.get('ctry')
+            
+            addrs=request.POST.get('addrs')
+            addrs1=request.POST.get('addrs1')
+            bct=request.POST.get('bct')
+            bst=request.POST.get('bst')
+            bzip=request.POST.get('bzip')
+            bpon=request.POST.get('bpon')
+            bfx=request.POST.get('bfx')
+            remark=request.POST.get('remark')
+            obal= float(request.POST.get('obal', 0.0))
+            crdr=request.POST.get('bal')
+            status='Active'
+            u = User.objects.get(id = request.user.id)
+            if crdr == 'credit':
+                obal = -obal
+            else:
+                obal = obal
+          
+            ctmr=customer(customerName=txtFullName,
+                          Fname=fName,Lname=lName,
+                          customerType=type,
+                        companyName=cpname,
+                        customerEmail=email,
+                        customerWorkPhone=wphone,
+                         customerMobile=mobile,skype=skname,
+                         designation=desg,department=dept,
+                           website=wbsite
+                           ,GSTTreatment=gstt,
+                           GSTIN=gstin,pan_no=pan,
+                           placeofsupply=posply, Taxpreference=tax1,
+                             currency=crncy,OpeningBalance=obal,
+                             PaymentTerms=pterms,
+                                PriceList=plst,PortalLanguage=plang,
+                                Facebook=fbk,
+                                Twitter=twtr,
+                                 Attention=atn,country=ctry,Address1=addrs,Address2=addrs1,
+                                  city=bct,state=bst,zipcode=bzip,phone1=bpon,
+                                   fax=bfx,
+                                     remark=remark,cr_dr=crdr,status=status,user=u )
+            ctmr.save() 
+ 
+            #  ...........................adding multiple rows of table to model  ........................................................       
+            CPsalutation =request.POST.getlist('sal[]')
+            Firstname=request.POST.getlist('ftname[]')
+            Lastname =request.POST.getlist('ltname[]')
+            CPemail =request.POST.getlist('mail[]')
+            CPphone=request.POST.getlist('bworkpn[]')
+            CPmobile=request.POST.getlist('bmobile[]')
+            CPskype=request.POST.getlist('bskype[]')
+            CPdesignation=request.POST.getlist('bdesg[]')
+            CPdepartment=request.POST.getlist('bdept[]') 
+            
+            cdata=customer.objects.get(id=ctmr.id)
+            Customr=cdata 
+            
+            if len(CPsalutation)==len(Firstname)==len(Lastname)==len(CPemail)==len(CPphone)==len(CPmobile)==len(CPskype)==len(CPdesignation)==len(CPdepartment):
+                mapped2=zip(CPsalutation,Firstname,Lastname,CPemail,CPphone,CPmobile,CPskype,CPdesignation,CPdepartment)
+                mapped2=list(mapped2)
+                print(mapped2)
+                for ele in mapped2:
+                    created = customer_contact_person_table.objects.get_or_create(CPsalutation=ele[0],Firstname=ele[1],Lastname=ele[2],CPemail=ele[3],
+                            CPphone=ele[4],CPmobile=ele[5],CPskype=ele[6],CPdesignation=ele[7],CPdepartment=ele[8],user=u,Customr=Customr)
+            options = {}
+            option_objects = customer.objects.filter(user=request.user)
+            for option in option_objects:
+                options[option.id] = [option.id , option.Fname , option.Lname]
+            return JsonResponse(options) 
+        else:
+            return JsonResponse({'error': 'Invalid request'}, status=400)

@@ -352,14 +352,25 @@
                         </div>
                     </div>
                     <div class="row mt-4">
+                        <div class="col-5"><label for="">GST Treatments :</label></div>
+                        <div class="col-7">
+                            <p class="bold">{{project.c_name.GSTTreatment}}</p>
+                        </div>
+                    </div>
+                    {% if project.c_name.GSTTreatment != 'Unregistered Business-not Registered under GST' %}
+                    <div class="row mt-4">
+                        <div class="col-5"><label for="">GSTIN :</label></div>
+                        <div class="col-7">
+                            <p class="bold">{{project.c_name.GSTIN}}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="row mt-4">
                         <div class="col-5"><label for="">Billing Method :</label></div>
                         <div class="col-7">
                             <p class="bold">
-                                {% if project.billing == "Fixed cost for project" or project.billing == "Based on project hours" %}
-                                {{project.rateperhour}}
-                                {% else %}
-                                Per hour
-                                {% endif %}</p>
+                                {{project.billing}}</p>
                         </div>
                     </div>
                     <div class="row mt-4">
@@ -407,12 +418,21 @@
                                     </p>
                                 </div>
                             </div>
+                            {% if project.billing == "Based on staff hours" %}
                             <div class="row mt-4">
                                 <div class="col-5"><label for="">Rate per hour :</label></div>
                                 <div class="col-7">
                                     <p class="bold">{{taskz.taskrph}}</p>
                                 </div>
                             </div>
+                            {% else %}
+                            <div class="row mt-4">
+                                <div class="col-5"><label for="">Rate per hour :</label></div>
+                                <div class="col-7">
+                                    <p class="bold">{{project.rateperhour}}</p>
+                                </div>
+                            </div>
+                            {% endif %}
                             {% if taskz.billable == 'Billed' %}
                             <div class="row mt-4">
                                 <div class="col-5"><label for="">Billed Date :</label></div>
@@ -474,6 +494,7 @@
                                 <div class="col-6">Bill date:</div>
                                 <div class="col-6" style="text-align: end;font-weight: bold;">{{taskz.billdate}}</div>
                             </div>
+                            
                             <div class="row mt-3 mx-2 text-dark">
                                 <div class="col-6">Amount:</div>
                                 <div class="col-6" style="text-align: end;font-weight: bold;">{{taskz.taskrph}} INR</div>

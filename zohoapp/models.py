@@ -152,6 +152,8 @@ class doc_upload_table(models.Model):
     
     
     
+    
+    
 class customer(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE,default='')
     Fname=models.CharField(max_length=100,null=True,blank=True)

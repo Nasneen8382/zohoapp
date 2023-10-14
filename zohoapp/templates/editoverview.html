@@ -12,6 +12,14 @@
         color: #fff;
         width: 200px;
     }
+    .input-group-text , .table .input-group-text {
+        /* background-color: white; Change background color to white */
+        color: rgb(255, 255, 255); /* Change text color to black or your desired text color */
+    }
+
+    .input-group-prepend {
+        border: 1px solid white; /* Change border color to white */
+    }
 </style>
 <!-- <section > -->
 <div>
@@ -72,6 +80,33 @@
                     value="{{proj.c_name.customerEmail}}">
             </div>
         </div>
+        <div class="form-group row mt-4">
+            <div class="col-sm-12 col-md-3 col-lg-3 col-form-label">
+              <label>GST Treatment</label>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-6">
+              <input type="text" id="customer-gst" class="form-control bg-light text-dark" value="{{proj.c_name.GSTTreatment}}">
+            </div>
+          </div>
+          {% if proj.c_name.GSTTreatment != 'Unregistered Business-not Registered under GST' %}
+          <div class="form-group row mt-4">
+            <div class="col-sm-12 col-md-3 col-lg-3 col-form-label">
+              <label>GSTIN</label>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-6">
+              <input type="text" id="gstin" class="form-control bg-light text-dark" value="{{proj.c_name.GSTTreatment}}">
+            </div>
+          </div>
+          {% endif %}
+
+          <div class="form-group row mt-4" id="gstin" style="display: none;">
+            <div class="col-sm-12 col-md-3 col-lg-3 col-form-label">
+              <label>GSTIN</label>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-6">
+              <input type="text" id="customer-gstin" class="form-control bg-light text-dark" >
+            </div>
+          </div>
 
         <div class="form-group row mt-4">
             <div class="col-sm-12 col-md-3 col-lg-3 col-form-label"><label>Billing Method*</label></div>
@@ -93,7 +128,7 @@
                 <div class="col-sm-12 col-md-6 col-lg-6">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <div class="input-group-text">INR</div>
+                            <div class="input-group-text" style="color: #fff;">INR</div>
                         </div>
                         <input type="text" class="form-control bg-light text-dark" name="rateperhour"
                             value="{{proj.rateperhour}}" id="inputBox">
@@ -221,8 +256,9 @@
                 <tr>
                     <th>Task name</th>
                     <th class="text-right">Description</th>
-                    <th class="text-right">Rate per hour</th>
                     <th></th>
+                    <th class="text-right">Rate per hour</th>
+                    
                     <th class="text-center">Actions</th>
 
                 </tr>
@@ -239,20 +275,17 @@
                             value="{{v.taskdes}}">
                     </td>
                     <td></td>
-                    <td class="text-right">
+                    {% if v.taskrph != '' and proj.billing == 'Based on staff hours' %}
+                    <td class="text-right" id="rph">
                         <div class="input-group mb-2">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">INR</div>
-                            </div>
-
-                            {% if v.taskrph != '' %}
+                            </div>                            
                             <input type="text" class="form-control bg-light text-dark" id="tsk1" name="taskrph" value="{{v.taskrph}}">
-                                {% else %}
-                                <input type="text" class="form-control bg-light text-dark" id="tsk1" name="taskrph">
-                                {% endif %}
                         </div>
-
                     </td>
+                    {% endif %}
+                   
                     <td class="text-center">
                         {% if v.billable == 'Billed' %}
                         <input type="checkbox" id="billable1" name="billable" placeholder="work phone" checked>
@@ -339,15 +372,20 @@
             if (selectedOption === 'Fixed cost for project') {
                 rateLabel.text('Total project cost*');
                 inputBoxContainer.show();
-                rateColumn.hide();
+                $('#rph').hide();
             } else if (selectedOption === 'Based on project hours') {
                 rateLabel.text('Rate per hour*');
                 inputBoxContainer.show();
-                rateColumn.hide();
+                $('#rph').hide();
+            } 
+                else if (selectedOption === 'Based on staff hours') {
+                rateLabel.text('Rate per hour*');
+                inputBoxContainer.hide();
+                $('#rph').show();
             } else {
                 rateLabel.text('Rate per hour*');
                 inputBoxContainer.hide();
-                rateColumn.show();
+                $('#rph').show();
             }
         }
 
@@ -484,15 +522,33 @@
     });
 </script>
 <script>
-    var customerSelect = document.getElementById('customer-select');
-    var customerEmailInput = document.getElementById('customer-email');
+     $(document).on('change', '#customer-select', function () {
+        var customer = $('#customer-select').val();
+        $.ajax({
+          type: "GET",
+          url: "{% url 'customerdata' %}",
+          data: {
+            id: customer
+          },
+          success: function (response) {
+            // console.log(response.email)
+            dataemail = response.email;
+            datagst =response.gst;
+            datagstin =response.gstin;
+            
+            document.getElementById('customer-email').value = dataemail;
+            document.getElementById('customer-gst').value = datagst;
+            if(datagst !='Unregistered Business-not Registered under GST' ){
+              document.getElementById('gstin').style.display='flex';
+              document.getElementById('customer-gstin').value = datagstin;
+            }
+            else{
+              document.getElementById('gstin').style.display='none';
+            }
 
-    customerSelect.addEventListener('change', function () {
-        var selectedOption = this.options[this.selectedIndex];
-        var email = selectedOption.dataset.email;
-
-        customerEmailInput.value = email;
-    });
+          }
+        });
+      });
 </script>
 
 
