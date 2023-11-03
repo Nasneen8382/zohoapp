@@ -15027,15 +15027,20 @@ def holiday_list(request):
 
     for event in all_events:
         month_year = event.start.strftime('%Y-%m')  # Format: 'YYYY-MM'
-    
+        year, month = map(int, month_year.split('-'))
+        
     # If the month_year is not in the dictionary, add it with a count of 1
         if month_year not in event_counts:
             event_counts[month_year] = 1
         else:
         # If the month_year is already in the dictionary, increment the count
             event_counts[month_year] += 1
+        
+
+
     for key, value in event_counts.items():
         year, month = key.split('-')
+        total_days = calendar.monthrange(year, month)[1]
         month_name = calendar.month_name[int(month)]
         formatted_month_year = f"{month_name}-{year}"
         formatted_event_counts[formatted_month_year] = value   

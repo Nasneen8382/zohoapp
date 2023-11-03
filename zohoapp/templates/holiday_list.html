@@ -65,12 +65,12 @@
             <th class="text-center">Sl no.</th>
             <th class="text-center">Month</th>
             <th class="text-center">Holidays</th>
-            <th class="text-center">Remove</th>
+            <th class="text-center">Action</th>
         </thead>
         {% for key, value in event_counts_json.items %}
         <tr class="text-light mt-2 pt-1">
             <td class="text-center">{{forloop.counter }}</td>
-            <td class="text-center" id="mnth-{{forloop.counter}}">{{ key }}</td>
+            <td class="text-center">{{ key }}</td>
             <td class="text-center">{{ value }}</td>
             
             <td class="text-center text-danger"><a href="{% url 'holidays' key %}">view</a></td>
