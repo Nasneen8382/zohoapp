@@ -741,6 +741,12 @@ urlpatterns = [
     path('holiday_list',views.holiday_list,name='holiday_list'),
     path('projentr_custmrA',views.projentr_custmrA,name='projentr_custmrA'),
 
+
+
+    path('holiday_add',views.holiday_add,name='holiday_add'),
+    path('holiday_edit/<int:id>',views.holiday_edit,name='holiday_edit'),
+    path('edit_holiday/<int:id>',views.edit_holiday,name='edit_holiday'),
+
     re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT})
     
     

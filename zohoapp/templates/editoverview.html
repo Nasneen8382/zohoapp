@@ -89,17 +89,17 @@
             </div>
           </div>
           {% if proj.c_name.GSTTreatment != 'Unregistered Business-not Registered under GST' %}
-          <div class="form-group row mt-4">
+          <div class="form-group row mt-4" id="gstform">
             <div class="col-sm-12 col-md-3 col-lg-3 col-form-label">
               <label>GSTIN</label>
             </div>
             <div class="col-sm-12 col-md-6 col-lg-6">
-              <input type="text" id="gstin" class="form-control bg-light text-dark" value="{{proj.c_name.GSTTreatment}}">
+              <input type="text" id="gstin" class="form-control bg-light text-dark" value="{{proj.c_name.GSTIN}}">
             </div>
           </div>
           {% endif %}
 
-          <div class="form-group row mt-4" id="gstin" style="display: none;">
+          <div class="form-group row mt-4" id="gstinform" style="display: none;">
             <div class="col-sm-12 col-md-3 col-lg-3 col-form-label">
               <label>GSTIN</label>
             </div>
@@ -275,7 +275,7 @@
                             value="{{v.taskdes}}">
                     </td>
                     <td></td>
-                    {% if v.taskrph != '' and proj.billing == 'Based on staff hours' %}
+                    {% if v.taskrph != '' and proj.billing == 'Based on staff hours' or proj.billing == 'Based on task hours' %}
                     <td class="text-right" id="rph">
                         <div class="input-group mb-2">
                             <div class="input-group-prepend">
@@ -539,11 +539,16 @@
             document.getElementById('customer-email').value = dataemail;
             document.getElementById('customer-gst').value = datagst;
             if(datagst !='Unregistered Business-not Registered under GST' ){
-              document.getElementById('gstin').style.display='flex';
+                document.getElementById('gstinform').style.display='flex';
+                document.getElementById('gstform').style.display='none';
+                document.getElementById('gstin').value ='';
               document.getElementById('customer-gstin').value = datagstin;
+            //   document.getElementById('gstin').value = datagst;
             }
             else{
-              document.getElementById('gstin').style.display='none';
+              document.getElementById('gstinform').style.display='none';
+              document.getElementById('gstform').style.display='none';
+
             }
 
           }
@@ -595,9 +600,9 @@
         function applyHideShowForRateColumn() {
             var selectedMethod = $('#billingMethodSelect').val();
             if (selectedMethod === "Fixed cost for project" || selectedMethod === "Based on project hours") {
-                $('.rate-column').hide();
+                $('#rph').hide();
             } else {
-                $('.rate-column').show();
+                $('#rph').show();
             }
         }
     });

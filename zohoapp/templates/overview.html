@@ -65,9 +65,11 @@
         justify-content: space-between;
         /* margin: 0 1rem; */
     }
-
+    
     .searchbar .right .btn {
         background-color: rgb(243, 188, 9);
+        font-size: 0.8rem;
+        padding: 0.3rem;
     }
 
     .searchbar .btn:hover {
@@ -100,6 +102,7 @@
     .card .bold {
         font-size: 1rem;
     }
+
     .right .dropdown-menu {
         width: 30vw;
     }
@@ -115,22 +118,24 @@
 
             <input class="form-control text-dark" type="text" placeholder="Search Project" name="search" id="search"
                 onkeyup="searchFunction()">
-                <a class="btn btn-outline-warning mx-1" href="" data-bs-toggle="dropdown" aria-haspopup="true"
+            <a class="btn btn-outline-warning mx-1" href="" data-bs-toggle="dropdown" aria-haspopup="true"
                 aria-expanded="false" role="button">
                 <i class="fa fa-sort"></i>
             </a>
             <div class="dropdown-menu ">
                 <a class="dropdown-item" href="">All</a>
                 <a class="dropdown-item" href="javascript:sortTable(0)">Project Name</a>
-                
+
             </div>
-            <a class="btn btn-outline-warning mx-1" href="" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
+            <a class="btn btn-outline-warning mx-1" href="" data-bs-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false" role="button">
                 <i class="fa fa-filter"></i></a>
-                <div class="dropdown-menu" id="filterMenu">
-                    <a class="dropdown-item" href="#" style="color:rgb(218, 164, 48) ;" data-value="All">All</a>
-                    <a class="dropdown-item" href="#" style="color:rgb(218, 164, 48) ;" data-value="Billed">Billed</a>
-                    <a class="dropdown-item" href="#" style="color:rgb(218, 164, 48) ;" data-value="Not Billed">Not Billed</a>
-                </div>
+            <div class="dropdown-menu" id="filterMenu">
+                <a class="dropdown-item" href="#" style="color:rgb(218, 164, 48) ;" data-value="All">All</a>
+                <a class="dropdown-item" href="#" style="color:rgb(218, 164, 48) ;" data-value="Billed">Billed</a>
+                <a class="dropdown-item" href="#" style="color:rgb(218, 164, 48) ;" data-value="Not Billed">Not
+                    Billed</a>
+            </div>
             <a class="btn btn-outline-warning" href="{% url 'proj' %}"><i class="fa fa-plus"></i></a>
         </div>
         <hr>
@@ -140,7 +145,7 @@
                 <tbody>
                     {% for v in proje %}
                     <tr id="over" class='clickable-row' data-href="{% url 'overview' v.id %}">
-                        <td style="display: none;"><a  style="color: rgb(255, 255, 255);">{{v.billable}}</a></td>
+                        <td style="display: none;"><a style="color: rgb(255, 255, 255);">{{v.billable}}</a></td>
 
                         <td class="text-center"><a style="color: rgb(255, 255, 255);">{{v.name}}</a></td>
                         <td class="text-center"><a style="color: rgb(255, 255, 255);">
@@ -158,8 +163,8 @@
     </div>
     <div class="col-sm-12 col-md-8 col-lg-8">
 
-        <div class="row"  style="background-color: #11111196;">
-            <div class="header pb-1 pt-3" >
+        <div class="row" style="background-color: #11111196;">
+            <div class="header pb-1 pt-3">
                 <h4 style="text-transform: uppercase;">{{ project.name }}</h4>
             </div>
             <div class="searchbar pb-4">
@@ -183,47 +188,6 @@
                     </label>
                     <input id="file-input" type="file" name="file" style="display:none;" onchange="uploadFile()"> -->
                     <a class="btn ml-1" href="" id="dd1" data-bs-toggle="dropdown" aria-haspopup="true"
-                            data-toggle="tooltip" title="Download Attachments" aria-expanded="false" role="button">
-                            <i class="fas fa-paperclip"></i>
-                        </a>
-                        <div class="dropdown-menu">
-                            {% if attach %}
-                            <table class="table table-borderless">
-                                {% for a in attach %}
-                                <tr>
-                                    <td>{{forloop.counter}}.</td>
-                                    <td><a href="{% url 'projfile_download' a.id %}">{{a.attachment.name}}</a></td>
-                                    <td><a href="{% url 'projdeletefile' a.id %}"><i class="fas fa-trash"></i></a></td>
-                                </tr>
-                                {% endfor %}
-                                
-                            </table>
-                            {% else %}
-                            <div class="text-center">No Attachment found</div>
-                            {% endif %}
-                            <div class="row mx-2">
-                                <label for="file-input" class="btn ml-1 border-0" >
-                                    Upload Files <i class="fas fa-upload"></i>
-                                </label>
-                                <input id="file-input" type="file" name="file" style="display:none;" onchange="uploadFile()">
-                            
-                            </div>
-                        </div>
-                        <a class="btn ml-1" href="{% url 'project_active' project.id %}" id="sts">{{project.mode}}</a>
-                </div>
-
-                <div class="right align-items-end" id="temp-btns" style="display: none;">
-                    <a class="btn btn_pdf ml-1" href="" id="convertToPDFButton" data-toggle="tooltip" title="Pdf"><i
-                        class="mdi mdi-file-pdf"></i></a>
-                <a class="btn btn_print ml-1" href="" data-toggle="tooltip" title="Print"><i class="mdi mdi-printer"></i></a>
-               
-                    <a class="btn " href="{% url 'editproj' project.id %}" data-toggle="tooltip" title="Edit"><i
-                        class="fas fa-edit"></i></a>
-                <a class="btn" href="{% url 'delproj' project.id %}" data-toggle="tooltip" title="Delete"><i
-                        class="fas fa-trash"></i></a>
-                <a class="btn" href="" data-toggle="modal" data-target="#commentModal" data-toggle="tooltip"
-                    title="comment"><i class="far fa-comment"></i></a>
-               <a class="btn ml-1" href="" id="dd1" data-bs-toggle="dropdown" aria-haspopup="true"
                         data-toggle="tooltip" title="Download Attachments" aria-expanded="false" role="button">
                         <i class="fas fa-paperclip"></i>
                     </a>
@@ -237,20 +201,64 @@
                                 <td><a href="{% url 'projdeletefile' a.id %}"><i class="fas fa-trash"></i></a></td>
                             </tr>
                             {% endfor %}
-                            
+
                         </table>
                         {% else %}
                         <div class="text-center">No Attachment found</div>
                         {% endif %}
                         <div class="row mx-2">
-                            <label for="file-input" class="btn ml-1 border-0" >
+                            <label for="file-input" class="btn ml-1 border-0">
                                 Upload Files <i class="fas fa-upload"></i>
                             </label>
-                            <input id="file-input" type="file" name="file" style="display:none;" onchange="uploadFile()">
-                        
+                            <input id="file-input" type="file" name="file" style="display:none;"
+                                onchange="uploadFile()">
+
                         </div>
                     </div>
-                     <a class="btn ml-1" href="{% url 'project_active' project.id %}" id="sts">{{project.mode}}</a>
+                    <a class="btn ml-1" href="{% url 'project_active' project.id %}" id="sts">{{project.mode}}</a>
+                </div>
+
+                <div class="right align-items-end" id="temp-btns" style="display: none;">
+                    <a class="btn btn_pdf ml-1" href="" id="convertToPDFButton" data-toggle="tooltip" title="Pdf"><i
+                            class="mdi mdi-file-pdf"></i></a>
+                    <a class="btn btn_print ml-1" href="" data-toggle="tooltip" title="Print"><i
+                            class="mdi mdi-printer"></i></a>
+
+                    <a class="btn " href="{% url 'editproj' project.id %}" data-toggle="tooltip" title="Edit"><i
+                            class="fas fa-edit"></i></a>
+                    <a class="btn" href="{% url 'delproj' project.id %}" data-toggle="tooltip" title="Delete"><i
+                            class="fas fa-trash"></i></a>
+                    <a class="btn" href="" data-toggle="modal" data-target="#commentModal" data-toggle="tooltip"
+                        title="comment"><i class="far fa-comment"></i></a>
+                    <a class="btn ml-1" href="" id="dd1" data-bs-toggle="dropdown" aria-haspopup="true"
+                        data-toggle="tooltip" title="Download Attachments" aria-expanded="false" role="button">
+                        <i class="fas fa-paperclip"></i>
+                    </a>
+                    <div class="dropdown-menu">
+                        {% if attach %}
+                        <table class="table table-borderless">
+                            {% for a in attach %}
+                            <tr>
+                                <td>{{forloop.counter}}.</td>
+                                <td><a href="{% url 'projfile_download' a.id %}">{{a.attachment.name}}</a></td>
+                                <td><a href="{% url 'projdeletefile' a.id %}"><i class="fas fa-trash"></i></a></td>
+                            </tr>
+                            {% endfor %}
+
+                        </table>
+                        {% else %}
+                        <div class="text-center">No Attachment found</div>
+                        {% endif %}
+                        <div class="row mx-2">
+                            <label for="file-input" class="btn ml-1 border-0">
+                                Upload Files <i class="fas fa-upload"></i>
+                            </label>
+                            <input id="file-input" type="file" name="file" style="display:none;"
+                                onchange="uploadFile()">
+
+                        </div>
+                    </div>
+                    <a class="btn ml-1" href="{% url 'project_active' project.id %}" id="sts">{{project.mode}}</a>
                 </div>
             </div>
             <!-- <hr> -->
@@ -293,7 +301,7 @@
 
                     // Close the new window after printing
                     printWindow.close();
-                    
+
 
 
                 });
@@ -313,10 +321,11 @@
 
                 <div class="row text-center">
                     <h3 style="color: #000000;">PROJECT DETAILS
-                        
+
                     </h3>
                     <h6 style="color: #000000;">{{project.mode}}
-                    </h6><hr>
+                    </h6>
+                    <hr>
                 </div>
                 <div class="gen-info col-6 " style="padding-left: 3rem;">
                     <div class="row my-4">
@@ -365,7 +374,7 @@
                         </div>
                     </div>
                     {% endif %}
-                    
+
                     <div class="row mt-4">
                         <div class="col-5"><label for="">Billing Method :</label></div>
                         <div class="col-7">
@@ -418,7 +427,7 @@
                                     </p>
                                 </div>
                             </div>
-                            {% if project.billing == "Based on staff hours" %}
+                            {% if project.billing == "Based on staff hours" or project.billing == "Based on task hours" %}
                             <div class="row mt-4">
                                 <div class="col-5"><label for="">Rate per hour :</label></div>
                                 <div class="col-7">
@@ -427,7 +436,7 @@
                             </div>
                             {% else %}
                             <div class="row mt-4">
-                                <div class="col-5"><label for="">Rate per hour :</label></div>
+                                <div class="col-5"><label for="">Project cost :</label></div>
                                 <div class="col-7">
                                     <p class="bold">{{project.rateperhour}}</p>
                                 </div>
@@ -451,7 +460,7 @@
             </div>
         </div>
         <div style="display: none;" id="template">
-            <div id="div-to-pdf" class="mx-2 my-4 p-4 ">
+            <div id="div-to-pdf" >
                 <div class="slip p-5 convert_to_pdf bg-light" id="whatToPrint"
                     style="box-shadow: 5px 5px 10px rgb(45, 45, 45);">
                     <!-- <div class="header text-dark">
@@ -468,36 +477,65 @@
 
                             </h6>
                             <div class="mt-4">
-                                <p class="d-inline-block text-dark">Date :</p><h5 class="d-inline-block text-dark">{{project.start}}</h5>
+                                <p class="d-inline-block text-dark">Date :</p>
+                                <h5 class="d-inline-block text-dark">{{project.start}}</h5>
                             </div>
                         </div>
                         <div class="col-md-6 text-right ">
+
+                            <h3 class="text-dark text-uppercase mt-3" style="font-size: 2rem; ">{{project.name}}</h3>
                             
-                            <h1 class="text-dark text-uppercase mt-3" style="font-size: 2.5rem; ">{{project.name}}</h1>
-                            <h6 class="text-dark" style="font-weight: bold;max-width: 15rem;word-wrap: break-word;">
-                                {{project.desc}}
-                            </h6>
                             <h6 class="text-dark" style="font-weight: bold;">Status : {{taskz.billable}}
                             </h6>
                         </div>
                     </div>
                     <hr>
-                    
-
-
 
 
 
                     <div class="row">
                         <div class="col-sm-12 col-md-12 col-lg-12">
+                            <table class="table">
+                                <thead>
+                                    <th>Bill date:</th>
+                                    
+                                    <th>Particular:</th>
+                                    <th>Task:</th>
+                                    <th>Amount:</th>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>{{taskz.billdate}}</td>
+                                        
+                                        {% for i in usern %}
+                                        <td>{{i.name}}</td>
+                                        {% endfor %}
+                                        <td>{{taskz.taskname}}</td>
+                                        {% if project.billing == "Based on staff hours" or project.billing == "Based on task hours" %}
+
+                                        <td>{{taskz.taskrph}}</td>
+                                        {% else %}
+                                        <td>{{project.rateperhour}}</td>
+                                        {% endif %}
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+
+                    <div class="row">
+                        <!-- <div class="col-sm-12 col-md-12 col-lg-12">
                             <div class="row mt-3 mx-2 text-dark">
                                 <div class="col-6">Bill date:</div>
                                 <div class="col-6" style="text-align: end;font-weight: bold;">{{taskz.billdate}}</div>
                             </div>
-                            
+
                             <div class="row mt-3 mx-2 text-dark">
                                 <div class="col-6">Amount:</div>
-                                <div class="col-6" style="text-align: end;font-weight: bold;">{{taskz.taskrph}} INR</div>
+                                <div class="col-6" style="text-align: end;font-weight: bold;">{{taskz.taskrph}} INR
+                                </div>
                             </div>
                             {% for i in usern %}
                             <div class="row mt-3 mx-2 text-dark">
@@ -513,8 +551,8 @@
                                 <div class="col-6">Description:</div>
                                 <div class="col-6" style="text-align: end;font-weight: bold;">{{taskz.taskdes}}</div>
                             </div>
-                            
-                        </div>
+
+                        </div> -->
                     </div>
 
 
@@ -667,29 +705,29 @@
 </script>
 <script>
     const filterMenuLinks = document.querySelectorAll('#filterMenu a');
-        const table = document.getElementById('myTable').getElementsByTagName('tr');
+    const table = document.getElementById('myTable').getElementsByTagName('tr');
 
-        for (const link of filterMenuLinks) {
-            link.addEventListener('click', filterTable);
-        }
+    for (const link of filterMenuLinks) {
+        link.addEventListener('click', filterTable);
+    }
 
-        function filterTable(event) {
-            event.preventDefault(); // Prevent the link's default behavior (page navigation).
+    function filterTable(event) {
+        event.preventDefault(); // Prevent the link's default behavior (page navigation).
 
-            const selectedValue = this.getAttribute('data-value');
-            // console.log(selectedValue);
+        const selectedValue = this.getAttribute('data-value');
+        // console.log(selectedValue);
 
-            for (let i = 0; i < table.length; i++) {
-                const row = table[i];
-                const status = row.getElementsByTagName('td')[0].innerText;
+        for (let i = 0; i < table.length; i++) {
+            const row = table[i];
+            const status = row.getElementsByTagName('td')[0].innerText;
 
-                if (selectedValue === 'All' || status.toLowerCase() === selectedValue.toLowerCase()) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
+            if (selectedValue === 'All' || status.toLowerCase() === selectedValue.toLowerCase()) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
             }
         }
+    }
     function sortTable(columnIndex) {
         let sortAscending = false
         const table = document.getElementById("myTable");

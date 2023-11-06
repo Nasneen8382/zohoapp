@@ -15039,11 +15039,14 @@ def holiday_list(request):
 
 
     for key, value in event_counts.items():
-        year, month = key.split('-')
+        # year, month = key.split('-')
+        year, month = map(int, key.split('-'))
         total_days = calendar.monthrange(year, month)[1]
         month_name = calendar.month_name[int(month)]
         formatted_month_year = f"{month_name}-{year}"
-        formatted_event_counts[formatted_month_year] = value   
+        # formatted_event_counts[formatted_month_year] = value   
+        formatted_event_counts[formatted_month_year] = {'count': value, 'total_days': total_days}
+
     context = {
         "events": all_events,
         "event_counts_json": formatted_event_counts,
@@ -15057,10 +15060,8 @@ def holidays(request,date):
     all_events = Events.objects.all()
     event_counts = {}
     event_dict = {}
-    print(date)
     month_name, year = date.split('-')
-    print(month_name)
-    print(year)
+   
 
     # Create a datetime object for the start of the specified month
     month_number = list(calendar.month_abbr).index(month_name[:3])
@@ -15267,7 +15268,7 @@ def delete_projectcomment(request,cid):
 def project_summary(request):
     company = company_details.objects.get(user=request.user)
     project = project1.objects.filter(user=request.user)
-    taskz=task.objects.all()
+    taskz=task.objects.filter(user=request.user)
     for t in taskz:
         usern=usernamez.objects.get(projn=t.proj)
         emp= Payroll.objects.get(id=usern.usernamez)
@@ -15419,3 +15420,29 @@ def projentr_custmrA(request):
             return JsonResponse(options) 
         else:
             return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+
+def holiday_add(request):
+        company = company_details.objects.get(user=request.user)
+        return render(request,'holiday_add.html',{'company':company})
+def holiday_edit(request,id):
+    company = company_details.objects.get(user=request.user)
+    holi = Events.objects.get(id=id)       
+    return render(request,'holiday_edit.html',{'holiday':holi,'company':company})
+
+
+def edit_holiday(request,id):
+    holi = Events.objects.get(id=id)
+    if request.user.is_authenticated:
+        if request.method=='POST':
+            holi.name=request.POST.get('title')  
+            holi.start=request.POST.get('start')  
+            holi.end=request.POST.get('end')  
+            holi.save()
+    start_date_string = holi.start  # Example: '2023-11-15'
+    start_date = datetime.strptime(start_date_string, '%Y-%m-%d')
+    formatted_month_year = start_date.strftime('%B-%Y')
+    print(formatted_month_year)
+    holidays_url = reverse('holidays', kwargs={'date': formatted_month_year})
+    return redirect(holidays_url)
