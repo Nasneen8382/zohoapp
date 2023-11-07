@@ -2272,6 +2272,7 @@
           var dropdown = $('#user_select');
           dropdown.empty();
           $.each(data, function (key, value) {
+            console.log()
             dropdown.append($('<option></option>').attr('value', key).text(value[1] + " " + value[2]));
           });
           var modal1 = document.getElementById("myMod");
@@ -2324,7 +2325,8 @@
           var dropdown = $('#customer');
           dropdown.empty();
           $.each(data, function (key, value) {
-            dropdown.append($('<option></option>').attr('value', key).text(value[1] + " " + value[2]));
+            console.log(data);
+            dropdown.append($('<option></option>').attr('value', value[0]).text(value[1] + " " + value[2]));
           });
           var modal1 = document.getElementById("myModa");
           modal1.style.display = "none";

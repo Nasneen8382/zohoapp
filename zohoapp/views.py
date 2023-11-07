@@ -7568,6 +7568,7 @@ def addproj(request):
                 proj=proj,
                 billable=billable,
                 billdate=ele[4],
+                user= user,
                 )
             else:
                 tasks, created = task.objects.get_or_create(
@@ -7576,6 +7577,7 @@ def addproj(request):
                 taskrph=ele[2],
                 proj=proj,
                 billable=billable,
+                user= user,
                 )
 
 
@@ -15417,6 +15419,7 @@ def projentr_custmrA(request):
             option_objects = customer.objects.filter(user=request.user)
             for option in option_objects:
                 options[option.id] = [option.id , option.Fname , option.Lname]
+                print(option.Fname)
             return JsonResponse(options) 
         else:
             return JsonResponse({'error': 'Invalid request'}, status=400)
