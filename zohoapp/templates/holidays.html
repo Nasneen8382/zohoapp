@@ -62,19 +62,82 @@
         color: red;
     }
 
-    #calendar {
+    /* #calendar {
         height: 700px;
         width: 700px;
+    } */
+    .searchbar{
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+        /* margin: 0 1rem; */
     }
-
+    .searchbar .btn{
+        padding: 0.5em ;
+        font-size: 0.8rem;
+        align-items: center;
+        justify-content: center;
+    }
 </style>
-<div class="container-fluid">
+<div class="row  p-3">
+    <div class="col-sm-12 col-md-3 col-lg-3 p-1">
+        <div class="header pb-4">
+            <h5>ALL PROJECTS</h5>
+        </div>
+        <div class="searchbar pb-1">
+
+            <input class="form-control text-dark" type="text" placeholder="Search Project" name="search" id="search"
+                onkeyup="searchFunction()">
+            <a class="btn btn-outline-warning mx-1" href="" data-bs-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false" role="button">
+                <i class="fa fa-sort"></i>
+            </a>
+            <div class="dropdown-menu ">
+                <a class="dropdown-item" href="">All</a>
+                <a class="dropdown-item" href="javascript:sortTable(0)">Project Name</a>
+
+            </div>
+            <a class="btn btn-outline-warning mx-1" href="" data-bs-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false" role="button">
+                <i class="fa fa-filter"></i></a>
+            <div class="dropdown-menu" id="filterMenu">
+                <a class="dropdown-item" href="#" style="color:rgb(218, 164, 48) ;" data-value="All">All</a>
+                <a class="dropdown-item" href="#" style="color:rgb(218, 164, 48) ;" data-value="Billed">Billed</a>
+                <a class="dropdown-item" href="#" style="color:rgb(218, 164, 48) ;" data-value="Not Billed">Not
+                    Billed</a>
+            </div>
+            <a class="btn btn-outline-warning" href="{% url 'proj' %}"><i class="fa fa-plus"></i></a>
+        </div>
+        <hr>
+        <div style="height:60vh;overflow-y: scroll;padding: 0;">
+            <table class="table  text-white" id="myTable">
+
+                <tbody>
+                    {% for v in proje %}
+                    <tr id="over" class='clickable-row' data-href="{% url 'overview' v.id %}">
+                        <td style="display: none;"><a style="color: rgb(255, 255, 255);">{{v.billable}}</a></td>
+
+                        <td class="text-center"><a style="color: rgb(255, 255, 255);">{{v.name}}</a></td>
+                        <td class="text-center"><a style="color: rgb(255, 255, 255);">
+                                {% if v.billing == "Fixed cost for project" or v.billing == "Based on project hours" %}
+                                {{v.rateperhour}}
+                                {% else %}
+                                Per hour
+                                {% endif %}
+                            </a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-9 col-lg-9 p-0" style="background-color: rgba(0, 0, 0, 0.541);">
     <!-- <div class="head text-light p-3">
         <h4>CALENDAR</h4>
     </div> -->
 
-    <div class="card-body" id="exTab2">
-        <a id="close" type="button" class="btn btn-danger" href="{% url 'holiday_list' %}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+    <div class="card-body m-0" id="exTab2">
+        <!-- <a id="close" type="button" class="btn btn-danger" href="{% url 'holiday_list' %}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a> -->
 
         <ul class="nav nav-tabs row">
             <li class="active col-6 text-center" id="list1"><a id="id1" class="btn">CALENDAR</a></li>
@@ -87,12 +150,12 @@
             <div class="tab-pane active" id="1" data-title="Sale">
                 <div class="row">
 
-                    <div class="col-lg-9 col-md-12 col-sm-12" style="background-color: black;color: white;padding: 10px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12" style="background-color: black;color: white;padding: 10px;">
                         <div id="calendar"></div>
-
+                        <div style="display: none;" id="eventCounts">{{event_counts_json}}</div>
 
                     </div>
-                    <div class="col-lg-3 col-md-12 col-sm-12" style="background-color: rgba(0, 0, 0, 0.603);">
+                    <!-- <div class="col-lg-12 col-md-12 col-sm-12" style="background-color: rgba(0, 0, 0, 0.603);">
 
                         <div class="row mx-3 my-5">
                             <a class="btn btn-warning " style="font-size: 1.2rem;" href="{% url 'holiday_add' %}"></i> Add Holiday</a>
@@ -110,7 +173,6 @@
                                     {{ key }}</div>
                                 &nbsp;&nbsp;{{ value|join:", " }}
                             </div>
-                            <!-- <p>{{ key }} {{ value|join:", " }}</p> -->
                             {% endfor %}
                         </div>
                         <hr>
@@ -119,7 +181,7 @@
                                 class="d-inline-block" id="idd2"></p>
                         </div>
 
-                    </div>
+                    </div> -->
                 </div>
 
             </div>
@@ -147,7 +209,7 @@
         </div>
     </div>
 
-
+</div>
 </div>
 
 

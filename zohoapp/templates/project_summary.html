@@ -93,7 +93,7 @@
                         <th>PROJECT NAME</th>
                         <th>CUSTOMER NAME</th>
                         <th>USER NAME</th>
-                        <th>Date</th>
+                        <th>DATE</th>
                         <th>TASK NAME</th>
                         <th>ACTION</th>
                         <th>BILL DATE</th>
@@ -110,7 +110,12 @@
                         <td>{{v.taskname}}</td>
                         <td>{{v.billable}}
                         <td>{% if v.billable == 'Billed' %}{{v.billdate}}{% endif %}</td>
-                        <td>{{v.taskrph}}</td>
+                        <td>{% if v.billing == "Based on staff hours" or v.billing == "Based on task hours"  %}
+                            {{v.taskrph}}
+                            {% else %}
+                            {{v.rateperhour}}
+                            {% endif %}
+                        </td>
 
 
                     </tr>

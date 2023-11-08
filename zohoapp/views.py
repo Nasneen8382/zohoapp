@@ -7492,7 +7492,7 @@ def proj(request):
     tasks=task.objects.all()
     uz=usernamez.objects.all()
     uc=usercreate.objects.all()
-    emp=Payroll.objects.filter()
+    emp=Payroll.objects.filter(user=request.user)
     company=company_details.objects.get(user=request.user)
     return render(request,'proj.html',{'data':data,'u':u,'tasks':tasks,'uz':uz,'uc':uc,'company':company,'emp':emp})
     
@@ -7669,7 +7669,7 @@ def editproj(request,id):
         fname= emp.first_name
         lname = emp.last_name
         i.name = fname+ " "+lname
-    emp= Payroll.objects.all()
+    emp=Payroll.objects.filter(user=request.user)
     return render(request,'editoverview.html',{'data':data,'proj':proj,'proje':proje,'uc':uc,'usern':usern,'taskz':taskz,'company':company,'emp':emp})
     
     
@@ -8227,6 +8227,7 @@ def editpayroll(request,id):
 
 def createpayroll(request):
     if request.method=='POST':
+        usr=request.user
         title=request.POST['title']
         fname=request.POST['fname']
         lname=request.POST['lname']
@@ -8276,7 +8277,7 @@ def createpayroll(request):
         uan=request.POST['uan'] 
         pfn=request.POST['pfn']
         pran=request.POST['pran']
-        payroll= Payroll(title=title,first_name=fname,last_name=lname,alias=alias,image=image,joindate=joindate,salary_type=saltype,salary=salary,emp_number=empnum,designation=designation,location=location,
+        payroll= Payroll(user=usr, title=title,first_name=fname,last_name=lname,alias=alias,image=image,joindate=joindate,salary_type=saltype,salary=salary,emp_number=empnum,designation=designation,location=location,
                          gender=gender,dob=dob,blood=blood,parent=fmname,spouse_name=sname,address=address,permanent_address=paddress ,Phone=phone,emergency_phone=ephone,
                          email=email,ITN=itn,Aadhar=an,UAN=uan,PFN=pfn,PRAN=pran,isTDS=istdsval,TDS=tds)
         payroll.save()
@@ -15146,6 +15147,7 @@ def remove(request,id):
 
 def create_emp(request):
     if request.method=='POST':
+        usr=request.user
         title=request.POST['title']
         fname=request.POST['fname']
         lname=request.POST['lname']
@@ -15195,7 +15197,7 @@ def create_emp(request):
         uan=request.POST['uan'] 
         pfn=request.POST['pfn']
         pran=request.POST['pran']
-        payroll= Payroll(title=title,first_name=fname,last_name=lname,alias=alias,image=image,joindate=joindate,salary_type=saltype,salary=salary,emp_number=empnum,designation=designation,location=location,
+        payroll= Payroll(user=usr,title=title,first_name=fname,last_name=lname,alias=alias,image=image,joindate=joindate,salary_type=saltype,salary=salary,emp_number=empnum,designation=designation,location=location,
                          gender=gender,dob=dob,blood=blood,parent=fmname,spouse_name=sname,address=address,permanent_address=paddress ,Phone=phone,emergency_phone=ephone,
                          email=email,ITN=itn,Aadhar=an,UAN=uan,PFN=pfn,PRAN=pran,isTDS=istdsval,TDS=tds)
         payroll.save()
@@ -15215,7 +15217,7 @@ def create_emp(request):
         # messages.success(request,'Saved succefully !')
         print(bank)
         options = {}
-        option_objects = Payroll.objects.all()
+        option_objects = Payroll.objects.filter(user=request.user)
         for option in option_objects:
             options[option.id] = [option.id , option.first_name , option.last_name]
         return JsonResponse(options) 
@@ -15272,12 +15274,17 @@ def project_summary(request):
     project = project1.objects.filter(user=request.user)
     taskz=task.objects.filter(user=request.user)
     for t in taskz:
+        pr=t.proj
+        pid= pr.id
         usern=usernamez.objects.get(projn=t.proj)
         emp= Payroll.objects.get(id=usern.usernamez)
+        p = project1.objects.get(id=pid)
         fname= emp.first_name
         lname = emp.last_name
         t.username = fname+ " "+lname
         t.useremail=usern.emailz
+        t.billing = p.billing
+        t.rateperhour=p.rateperhour
         
     return render(request,'project_summary.html',{'company':company,'taskz':taskz})
     

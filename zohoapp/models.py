@@ -728,7 +728,7 @@ class project1(models.Model):
     desc=models.CharField(max_length=255,null=True,blank=True)
     c_name=models.ForeignKey(customer,on_delete=models.CASCADE,null=True,blank=True)
     billing=models.CharField(max_length=255,null=True,blank=True)
-    rateperhour=models.CharField(max_length=255,null=True,blank=True)
+    rateperhour = models.CharField(max_length=255,null=True,blank=True)
     budget=models.CharField(max_length=255,null=True,blank=True)
     active = models.BooleanField(default = True)
     comment=models.CharField(max_length=255,null=True,blank=True)
@@ -803,6 +803,8 @@ class payment_made(models.Model):
     
     
 class Payroll(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
+
     title = models.CharField(max_length=100,null=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100,null=True)
