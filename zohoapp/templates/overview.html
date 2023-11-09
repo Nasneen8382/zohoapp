@@ -286,21 +286,14 @@
 
 
                 $(document).on('click', '.btn_print', function (event) {
-                    event.preventDefault();
+                    var printContents = document.getElementById("div-to-pdf").innerHTML;
+      var originalContents = document.body.innerHTML;
 
+      document.body.innerHTML = printContents;
 
-                    const pdfCard = document.getElementById('div-to-pdf').cloneNode(true);
+      window.print();
 
-                    // Create a new window for printing
-                    const printWindow = window.open('', '');
-
-                    printWindow.document.body.appendChild(pdfCard);
-
-
-                    printWindow.print();
-
-                    // Close the new window after printing
-                    printWindow.close();
+      document.body.innerHTML = originalContents;
 
 
 

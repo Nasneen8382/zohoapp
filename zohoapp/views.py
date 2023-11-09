@@ -15032,12 +15032,15 @@ def holiday_list(request):
         month_year = event.start.strftime('%Y-%m')  # Format: 'YYYY-MM'
         year, month = map(int, month_year.split('-'))
         
+        event_duration = (event.end - event.start).days+1 if event.end else 1
+
+        print(event_duration)
     # If the month_year is not in the dictionary, add it with a count of 1
         if month_year not in event_counts:
-            event_counts[month_year] = 1
+            event_counts[month_year] = event_duration
         else:
         # If the month_year is already in the dictionary, increment the count
-            event_counts[month_year] += 1
+            event_counts[month_year] += event_duration
         
 
 
@@ -15116,7 +15119,7 @@ def all_events(request):
             'title': event.name,                                                                                         
             # 'id': event.id,                                                                                              
             'start': event.start.date(),                                                         
-            'end': event.end.date(), 
+            'end': (event.end + timedelta(days=1)).date() if event.end else event.start.date(),
             # 'rendering': 'background',
             'color': 'red',
             'allDay': 'true',
